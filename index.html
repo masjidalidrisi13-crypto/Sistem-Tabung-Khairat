@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Sistem Tabung Khairat Kematian</title>
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -46,6 +46,9 @@ tailwind.config = {
 }
 </script>
 <style>
+* {
+  touch-action: manipulation;
+}
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f6f9;
@@ -529,6 +532,7 @@ let settings = {
   waPengerusi: "60123456789",
   waSU: "60198765432"
 };
+
 function formatTime12H(time24) {
   if (!time24) return '-';
   if (/[a-zA-Z]/.test(time24)) return time24;
@@ -549,33 +553,44 @@ function formatTime12H(time24) {
   const formattedHours = hours12 < 10 ? '0' + hours12 : hours12;
   return `${formattedHours}:${minutes} ${suffix}`;
 }
+
 window.onload = function() {
   loadLocalSettings();
   updateCurrentDate();
   loadLocalRecords();
   initChart();
   renderAllViews();
-  history.replaceState({ page: 'exit' }, "", "");
-  history.pushState({ page: 'utama' }, "", "");
+
+  // Kawalan Sejarah (History) Pelayar Yang Kemas
+  history.replaceState({ page: 'utama' }, "", "");
+
   window.addEventListener('popstate', function(event) {
     const formModal = document.getElementById('form-modal');
     const confirmModal = document.getElementById('confirm-modal');
-    if(!formModal.classList.contains('hidden')) {
+
+    // 1. Jika ada modal yang terbuka, tutup modal sahaja dahulu
+    if (!formModal.classList.contains('hidden')) {
       closeFormModal();
       history.pushState({ page: currentActiveTab }, "", "");
       return;
     }
-    if(!confirmModal.classList.contains('hidden')) {
+    if (!confirmModal.classList.contains('hidden')) {
       closeConfirmModal();
       history.pushState({ page: currentActiveTab }, "", "");
       return;
     }
+
+    // 2. Jika bukan berada di tab 'utama', kembali ke tab 'utama'
     if (currentActiveTab !== 'utama') {
       switchTab('utama', false);
-      history.pushState({ page: 'utama' }, "", "");
+      history.replaceState({ page: 'utama' }, "", "");
+    } else {
+      // 3. Jika sudah berada di tab 'utama', biarkan pelayar keluar terus dari aplikasi
+      history.back();
     }
   });
 };
+
 function updateCurrentDate() {
   const today = new Date();
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -583,6 +598,7 @@ function updateCurrentDate() {
   document.getElementById('current-date-display').innerText = formatted;
   document.getElementById('print-timestamp').innerText = formatted;
 }
+
 function switchTab(tabId, updateHistory = true) {
   currentActiveTab = tabId;
   document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
@@ -602,10 +618,11 @@ function switchTab(tabId, updateHistory = true) {
   if(tabId === 'utama') {
     updateChart();
   }
-  if(updateHistory && tabId !== 'utama') {
-    history.pushState({ page: tabId }, "", "");
+  if(updateHistory) {
+    history.replaceState({ page: tabId }, "", "");
   }
 }
+
 function getLatestRecord() {
   if (records.length === 0) return null;
   return [...records].sort((a, b) => {
@@ -620,6 +637,7 @@ function getLatestRecord() {
     return new Date(b.tarikh) - new Date(a.tarikh);
   })[0];
 }
+
 function generateBilNumber(dateString) {
   if (records.length === 0) return `614 (1/${new Date(dateString).getFullYear()})`;
   
@@ -641,6 +659,7 @@ function generateBilNumber(dateString) {
   
   return `${nextGenNo} (${nextYearNo}/${currentYear})`;
 }
+
 function openFormModal(editRecord = null) {
   const modal = document.getElementById('form-modal');
   const form = document.getElementById('death-form');
@@ -689,10 +708,13 @@ function openFormModal(editRecord = null) {
     document.getElementById('form-bil-display').innerText = nextBil;
   }
   modal.classList.remove('hidden');
+  history.pushState({ modal: 'open' }, "", "");
 }
+
 function closeFormModal() {
   document.getElementById('form-modal').classList.add('hidden');
 }
+
 function calculateDayFromDate() {
   const dateVal = document.getElementById('form-tarikh').value;
   if(!dateVal) return;
@@ -704,6 +726,7 @@ function calculateDayFromDate() {
     document.getElementById('form-bil-display').innerText = generateBilNumber(dateVal);
   }
 }
+
 function toggleManualInput(type) {
   if(type === 'kampung') {
     const sel = document.getElementById('form-kampung').value;
@@ -722,6 +745,7 @@ function toggleManualInput(type) {
     else input.classList.add('hidden');
   }
 }
+
 function handleFormSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('form-id').value;
@@ -791,6 +815,7 @@ function handleFormSubmit(e) {
   closeFormModal();
   renderAllViews();
 }
+
 function renderAllViews() {
   renderGeneralTable();
   renderLatestTable();
@@ -798,6 +823,7 @@ function renderAllViews() {
   updateStats();
   updateChart();
 }
+
 function updateStats() {
   const total = records.length;
   const currentYear = new Date().getFullYear();
@@ -835,6 +861,7 @@ function updateStats() {
   }
   document.getElementById('stat-top-kampung').innerText = topKampung !== '-' ? `${topKampung} (${maxCount})` : '-';
 }
+
 function renderGeneralTable(filteredData = null) {
   const tbody = document.getElementById('general-table-body');
   const dataToRender = filteredData || records;
@@ -857,6 +884,7 @@ function renderGeneralTable(filteredData = null) {
     </tr>
   `).join('');
 }
+
 function renderLatestTable() {
   const tbody = document.getElementById('latest-record-body');
   const latest = getLatestRecord();
@@ -876,6 +904,7 @@ function renderLatestTable() {
     </tr>
   `;
 }
+
 function renderPrintTable() {
   const tbody = document.getElementById('print-table-body');
   if(records.length === 0) {
@@ -896,6 +925,7 @@ function renderPrintTable() {
     </tr>
   `).join('');
 }
+
 function filterRecords() {
   const q = document.getElementById('smart-search-input').value.toLowerCase();
   const filtered = records.filter(r => 
@@ -1019,6 +1049,7 @@ Masjid Al - Idrisi Mukim Banggol Setol, Pasir Mas, Kelantan`;
   const encoded = encodeURIComponent(text);
   window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
 }
+
 function triggerEditByBil() {
   const inputEl = document.getElementById('input-edit-bil');
   const bilInput = inputEl.value.trim();
@@ -1033,6 +1064,7 @@ function triggerEditByBil() {
     showToast('Rekod dengan No Bil tersebut tidak ditemui.');
   }
 }
+
 function triggerDeleteByBil() {
   const inputEl = document.getElementById('input-delete-bil');
   const bilInput = inputEl.value.trim();
@@ -1044,14 +1076,17 @@ function triggerDeleteByBil() {
   if(record) {
     recordToDeleteId = record.id;
     document.getElementById('confirm-modal').classList.remove('hidden');
+    history.pushState({ modal: 'confirm' }, "", "");
   } else {
     showToast('Rekod dengan No Bil tersebut tidak ditemui.');
   }
 }
+
 function closeConfirmModal() {
   recordToDeleteId = null;
   document.getElementById('confirm-modal').classList.add('hidden');
 }
+
 document.getElementById('confirm-delete-btn').onclick = function() {
   if(recordToDeleteId) {
     records = records.filter(r => r.id !== recordToDeleteId);
@@ -1062,6 +1097,7 @@ document.getElementById('confirm-delete-btn').onclick = function() {
   }
   closeConfirmModal();
 };
+
 function saveSettingInfo() {
   settings.namaTabung = document.getElementById('setting-nama-tabung').value;
   settings.subTabung = document.getElementById('setting-sub-tabung').value;
@@ -1069,12 +1105,14 @@ function saveSettingInfo() {
   applySettingsDisplay();
   showToast('Maklumat Tabung Khairat berjaya disimpan!');
 }
+
 function saveWhatsAppNumbers() {
   settings.waPengerusi = document.getElementById('setting-wa-pengerusi').value;
   settings.waSU = document.getElementById('setting-wa-su').value;
   localStorage.setItem('khairat_settings', JSON.stringify(settings));
   showToast('Nombor WhatsApp berjaya dikemaskini!');
 }
+
 function loadLocalSettings() {
   const saved = localStorage.getItem('khairat_settings');
   if(saved) {
@@ -1082,15 +1120,18 @@ function loadLocalSettings() {
   }
   applySettingsDisplay();
 }
+
 function applySettingsDisplay() {
   document.getElementById('setting-nama-tabung').value = settings.namaTabung;
   document.getElementById('setting-sub-tabung').value = settings.subTabung;
   document.getElementById('setting-wa-pengerusi').value = settings.waPengerusi || '';
   document.getElementById('setting-wa-su').value = settings.waSU || '';
 }
+
 function saveRecordsToStorage() {
   localStorage.setItem('khairat_records', JSON.stringify(records));
 }
+
 function loadLocalRecords() {
   const saved = localStorage.getItem('khairat_records');
   if(saved) {
@@ -1112,6 +1153,7 @@ function loadLocalRecords() {
       timestamp: Date.now()}];
   }
 }
+
 function exportJSON() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
   const downloadAnchor = document.createElement('a');
@@ -1122,6 +1164,7 @@ function exportJSON() {
   downloadAnchor.remove();
   showToast('Eksport JSON berjaya.');
 }
+
 function importJSON(event) {
   const fileReader = new FileReader();
   fileReader.onload = function(e) {
@@ -1149,12 +1192,14 @@ function importJSON(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
+
 function formatDateMY(dateStr) {
   if(!dateStr) return '-';
   const parts = dateStr.split('-');
   if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
   return dateStr;
 }
+
 function showToast(msg) {
   const toast = document.getElementById('toast');
   document.getElementById('toast-message').innerText = msg;
