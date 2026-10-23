@@ -91,6 +91,7 @@ body {
   color: #ffffff !important;
   font-size: 8.5pt;
 }
+/* TETAPAN KHUSUS CETAKAN A4 LANSKAP (1 MUKA SURAT) */
 @media print {
   html, body {
     background: white !important;
@@ -104,7 +105,7 @@ body {
   .print-only { display: block !important; }
   @page {
     size: A4 landscape;
-    margin: 0.8cm;
+    margin: 0.5cm;
   }
   #page-cetak {
     display: block !important;
@@ -118,19 +119,31 @@ body {
     margin: 0 !important;
   }
   .print-header {
-    margin-bottom: 12px !important;
-    padding-bottom: 8px !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 4px !important;
+  }
+  .print-header h2 {
+    font-size: 13pt !important;
+    margin-bottom: 2px !important;
+  }
+  .print-header p {
+    font-size: 9pt !important;
+    margin: 0 !important;
   }
   table {
     width: 100% !important;
     border-collapse: collapse !important;
-    font-size: 8.5pt !important;
-    page-break-inside: auto;
+    font-size: 7.5pt !important;
+    line-height: 1.15 !important;
+    page-break-inside: avoid;
   }
-  tr { page-break-inside: avoid; page-break-after: auto; }
+  tr { 
+    page-break-inside: avoid; 
+    page-break-after: auto; 
+  }
   th, td {
     border: 1px solid #333 !important;
-    padding: 4px 6px !important;
+    padding: 2px 4px !important;
   }
   th {
     background-color: #6b7280 !important;
@@ -895,7 +908,6 @@ function filterRecords() {
   renderGeneralTable(filtered);
 }
 
-// INITIATE CHART - MEMAKSA SEMUA LABEL PAKSI-X DIPAPARKAN TANPA DIPOTONG/DILOMPATI
 function initChart() {
   const ctx = document.getElementById('chartKampung').getContext('2d');
   chartInstance = new Chart(ctx, {
@@ -916,8 +928,8 @@ function initChart() {
       scales: {
         x: {
           ticks: {
-            autoSkip: false, // Memaksa paparan kesemua nama kampung
-            maxRotation: 45, // Mencondongkan label 45 darjah
+            autoSkip: false,
+            maxRotation: 45,
             minRotation: 45,
             font: {
               size: 10
