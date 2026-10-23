@@ -629,7 +629,6 @@ function switchTab(tabId, updateHistory = true) {
   }
 }
 
-// FUNGSI MENDAPATKAN REKOD TERKINI DENGAN TEPAT
 function getLatestRecord() {
   if (records.length === 0) return null;
   return [...records].sort((a, b) => {
@@ -814,7 +813,18 @@ function handleFormSubmit(e) {
       tempat,
       timestamp: new Date().getTime()
     };
-    records.unshift(newRecord);
+    
+    // MASUKKAN DI BAHAGIAN BAWAH DAN SUSUN MENAIK (ASCENDING)
+    records.push(newRecord);
+    records.sort((a, b) => {
+      const matchA = (a.bilKematian || '').match(/^(\d+)/);
+      const matchB = (b.bilKematian || '').match(/^(\d+)/);
+      const numA = matchA ? parseInt(matchA[1], 10) : 0;
+      const numB = matchB ? parseInt(matchB[1], 10) : 0;
+      if (numA !== numB) return numA - numB;
+      return new Date(a.tarikh) - new Date(b.tarikh);
+    });
+
     saveRecordsToStorage();
     showToast('Rekod kematian baharu berjaya disimpan!');
   }
@@ -882,7 +892,6 @@ function renderGeneralTable(filteredData = null) {
   `).join('');
 }
 
-// PAPARAN KOTAK TERKINI SENTIASA MENGAMBIL REKOD LATEST WALAUPUN DATA DIIMPORT MENGIKUT URUTAN MASA
 function renderLatestTable() {
   const tbody = document.getElementById('latest-record-body');
   const latest = getLatestRecord();
@@ -976,7 +985,6 @@ function updateChart() {
   chartInstance.update();
 }
 
-// FUNGSI HANTAR WHATSAPP MENGGUNAKAN REKOD TERKINI YANG DIJAMIN TEPAT
 function sendWhatsApp(role) {
   const latest = getLatestRecord();
   if(!latest) {
@@ -1127,8 +1135,7 @@ function loadLocalRecords() {
       masaSolat: "05:00 ptg",
       lokasiSolat: "Masjid Al - Idrisi Mukim Bgl Setol",
       tempat: "Tanah Perkuburan Islam Pondok",
-      timestamp: Date.now()
-    }];
+      timestamp: Date.now()}];
   }
 }
 
@@ -1149,6 +1156,15 @@ function importJSON(event) {
     try {
       const imported = JSON.parse(e.target.result);
       if(Array.isArray(imported)) {
+        // Susun data import secara menaik (ascending) mengikut nombor bil
+        imported.sort((a, b) => {
+          const matchA = (a.bilKematian || '').match(/^(\d+)/);
+          const matchB = (b.bilKematian || '').match(/^(\d+)/);
+          const numA = matchA ? parseInt(matchA[1], 10) : 0;
+          const numB = matchB ? parseInt(matchB[1], 10) : 0;
+          if (numA !== numB) return numA - numB;
+          return new Date(a.tarikh) - new Date(b.tarikh);
+        });
         records = imported;
         saveRecordsToStorage();
         renderAllViews();
