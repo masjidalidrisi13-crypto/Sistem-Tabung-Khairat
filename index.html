@@ -1,1102 +1,1000 @@
-```html
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Tabung Khairat Kematian</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Firebase SDK & Initialization -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // Konfigurasi Firebase Web App
-        const firebaseConfig = {
-            apiKey: "AIzaSyBONw03TtyThH75xEPgRUZu7qS-XC07kiQ",
-            authDomain: "sistem-tabung-khairat.firebaseapp.com",
-            projectId: "sistem-tabung-khairat",
-            storageBucket: "sistem-tabung-khairat.firebasestorage.app",
-            messagingSenderId: "293269812469",
-            appId: "1:293269812469:web:a2783cdc3d33ebf5cac1bc"
-        };
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        window.firebaseApp = app;
-    </script>
-    <!-- Tailwind Custom Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            DEFAULT: '#0b132b', // Biru Gelap Pekat
-                            dark: '#050a18',    // Biru Sangat Pekat
-                            light: '#1c2541',   // Biru Gelap
-                            accent: '#1e3a8a',
-                            bg: '#f0f3f8'
-                        }
-                    },
-                    fontFamily: {
-                        segoe: ['"Segoe UI"', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif']
-                    }
-                }
-            }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistem Tabung Khairat Kematian</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Chart.js for Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Firebase SDK & Initialization -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyBONw03TtyThH75xEPgRUZu7qS-XC07kiQ",
+  authDomain: "sistem-tabung-khairat.firebaseapp.com",
+  projectId: "sistem-tabung-khairat",
+  storageBucket: "sistem-tabung-khairat.firebasestorage.app",
+  messagingSenderId: "293269812469",
+  appId: "1:293269812469:web:a2783cdc3d33ebf5cac1bc"
+};
+const app = initializeApp(firebaseConfig);
+window.firebaseApp = app;
+</script>
+<!-- Tailwind Custom Configuration -->
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          DEFAULT: '#0b132b',
+          dark: '#050a18',
+          light: '#1c2541',
+          accent: '#1e3a8a',
+          bg: '#f0f3f8'
         }
-    </script>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-        }
-        /* Custom Button Styling */
-        .btn-custom {
-            background-color: #0b132b;
-            color: white;
-            border-radius: 9999px;
-            padding: 10px 24px;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(11, 19, 43, 0.35);
-            transition: all 0.2s ease-in-out;
-            border: 2px solid #050a18;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-custom:hover {
-            background-color: #050a18;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(5, 10, 24, 0.45);
-        }
-        .btn-custom:active {
-            transform: translateY(1px);
-        }
-        /* Sidebar Nav item styles */
-        .nav-item {
-            border-radius: 12px;
-            transition: all 0.2s;
-            color: #4b5563;
-        }
-        .nav-item.active {
-            background-color: #0b132b;
-            color: white;
-            box-shadow: 0 4px 12px rgba(11, 19, 43, 0.3);
-        }
-        /* Table Font Size set exactly to 8.5pt & Dark Navy Header */
-        .table-umum {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 8.5pt;
-        }
-        .table-umum thead tr {
-            background-color: #0b132b !important;
-            color: #ffffff !important;
-            font-size: 8.5pt;
-        }
-        /* Optimized Print styling for A4 Landscape - Single Page Fix */
-        @media print {
-            html, body {
-                background: white !important;
-                color: black !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                height: auto !important;
-                overflow: visible !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .print-only {
-                display: block !important;
-            }
-            @page {
-                size: A4 landscape;
-                margin: 0.8cm;
-            }
-            #page-cetak {
-                display: block !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .print-container {
-                box-shadow: none !important;
-                border: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .print-header {
-                margin-bottom: 12px !important;
-                padding-bottom: 8px !important;
-            }
-            table {
-                width: 100% !important;
-                border-collapse: collapse !important;
-                font-size: 8.5pt !important;
-                page-break-inside: auto;
-            }
-            tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
-            th, td {
-                border: 1px solid #333 !important;
-                padding: 4px 6px !important;
-            }
-            th {
-                background-color: #6b7280 !important;
-                color: white !important;
-                text-align: center !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-        }
-    </style>
+      },
+      fontFamily: {
+        segoe: ['"Segoe UI"', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<style>
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+}
+.btn-custom {
+  background-color: #0b132b;
+  color: white;
+  border-radius: 9999px;
+  padding: 10px 24px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(11, 19, 43, 0.35);
+  transition: all 0.2s ease-in-out;
+  border: 2px solid #050a18;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-custom:hover {
+  background-color: #050a18;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(5, 10, 24, 0.45);
+}
+.btn-custom:active {
+  transform: translateY(1px);
+}
+.nav-item {
+  border-radius: 12px;
+  transition: all 0.2s;
+  color: #4b5563;
+}
+.nav-item.active {
+  background-color: #0b132b;
+  color: white;
+  box-shadow: 0 4px 12px rgba(11, 19, 43, 0.3);
+}
+.table-umum {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 8.5pt;
+}
+.table-umum thead tr {
+  background-color: #0b132b !important;
+  color: #ffffff !important;
+  font-size: 8.5pt;
+}
+@media print {
+  html, body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  @page {
+    size: A4 landscape;
+    margin: 0.8cm;
+  }
+  #page-cetak {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .print-container {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .print-header {
+    margin-bottom: 12px !important;
+    padding-bottom: 8px !important;
+  }
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8.5pt !important;
+    page-break-inside: auto;
+  }
+  tr { page-break-inside: avoid; page-break-after: auto; }
+  th, td {
+    border: 1px solid #333 !important;
+    padding: 4px 6px !important;
+  }
+  th {
+    background-color: #6b7280 !important;
+    color: white !important;
+    text-align: center !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
-    <!-- Header Desktop/Mobile -->
-    <header class="p-3 md:p-6 pb-0 md:pb-0 no-print">
-        <div class="max-w-7xl mx-auto">
-            <div class="bg-brand text-white rounded-3xl p-5 md:p-8 shadow-xl relative overflow-hidden">
-                <h1 id="header-nama-tabung" class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-snug uppercase space-y-1">
-                    <span class="block text-2xl sm:text-3xl md:text-4xl">MASJID AL - IDRISI</span>
-                    <span class="block text-xl sm:text-2xl md:text-3xl">MUKIM BANGGOL SETOL</span>
-                </h1>
-                <p id="header-sub-tabung" class="text-sm sm:text-base text-blue-200 mt-2 font-medium">Tabung Khairat Kematian</p>
-                <div class="mt-4 inline-flex items-center gap-2 bg-white/10 px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-semibold border border-white/15 backdrop-blur-md">
-                    <i class="fa-regular fa-calendar-days text-blue-300"></i>
-                    <span id="current-date-display">...</span>
-                </div>
-            </div>
-        </div>
-    </header>
+<!-- Header Desktop/Mobile -->
+<header class="p-3 md:p-6 pb-0 md:pb-0 no-print">
+  <div class="max-w-7xl mx-auto">
+    <div class="bg-brand text-white rounded-3xl p-5 md:p-8 shadow-xl relative overflow-hidden">
+      <h1 id="header-nama-tabung" class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-snug uppercase space-y-1">
+        <span class="block text-2xl sm:text-3xl md:text-4xl">MASJID AL - IDRISI</span>
+        <span class="block text-xl sm:text-2xl md:text-3xl">MUKIM BANGGOL SETOL</span>
+      </h1>
+      <p id="header-sub-tabung" class="text-sm sm:text-base text-blue-200 mt-2 font-medium">Tabung Khairat Kematian</p>
+      <div class="mt-4 inline-flex items-center gap-2 bg-white/10 px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-semibold border border-white/15 backdrop-blur-md">
+        <i class="fa-regular fa-calendar-days text-blue-300"></i>
+        <span id="current-date-display">...</span>
+      </div>
+    </div>
+  </div>
+</header>
 
-    <!-- Navigation Bar For Mobile -->
-    <nav class="md:hidden px-3 pt-3 no-print">
-        <div class="bg-white rounded-2xl p-2 shadow-sm border border-gray-200 grid grid-cols-4 gap-1 text-center">
-            <button onclick="switchTab('utama')" id="mob-nav-utama" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold bg-brand text-white">
-                <i class="fa-solid fa-chart-pie text-base mb-1"></i> Utama
-            </button>
-            <button onclick="switchTab('senarai')" id="mob-nav-senarai" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600">
-                <i class="fa-solid fa-list-check text-base mb-1"></i> Senarai
-            </button>
-            <button onclick="switchTab('cetak')" id="mob-nav-cetak" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600">
-                <i class="fa-solid fa-print text-base mb-1"></i> Cetak
-            </button>
-            <button onclick="switchTab('tetapan')" id="mob-nav-tetapan" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600">
-                <i class="fa-solid fa-gear text-base mb-1"></i> Tetapan
-            </button>
-        </div>
+<!-- Navigation Bar For Mobile -->
+<nav class="md:hidden px-3 pt-3 no-print">
+  <div class="bg-white rounded-2xl p-2 shadow-sm border border-gray-200 grid grid-cols-4 gap-1 text-center">
+    <button onclick="switchTab('utama')" id="mob-nav-utama" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold bg-brand text-white"><i class="fa-solid fa-chart-pie text-base mb-1"></i> Utama</button>
+    <button onclick="switchTab('senarai')" id="mob-nav-senarai" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600"><i class="fa-solid fa-list-check text-base mb-1"></i> Senarai</button>
+    <button onclick="switchTab('cetak')" id="mob-nav-cetak" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600"><i class="fa-solid fa-print text-base mb-1"></i> Cetak</button>
+    <button onclick="switchTab('tetapan')" id="mob-nav-tetapan" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600"><i class="fa-solid fa-gear text-base mb-1"></i> Tetapan</button>
+  </div>
+</nav>
+
+<!-- Main Content Layout -->
+<div class="max-w-7xl w-full mx-auto flex-1 flex flex-col md:flex-row p-3 md:p-6 gap-6">
+  <!-- Sidebar Navigation for Desktop -->
+  <aside class="hidden md:block w-64 bg-white rounded-2xl p-4 shadow-sm border border-gray-200 h-fit no-print">
+    <div class="bg-brand text-white p-4 rounded-xl mb-6 shadow-sm">
+      <h2 id="sidebar-nama-tabung" class="font-bold text-xs uppercase leading-snug">MASJID AL - IDRISI<br>MUKIM BANGGOL SETOL</h2>
+      <p class="text-xs text-blue-200 mt-1">Tabung Khairat Kematian</p>
+    </div>
+    <nav class="space-y-2">
+      <button onclick="switchTab('utama')" id="dt-nav-utama" class="nav-item active w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm"><i class="fa-solid fa-chart-pie w-5"></i> Utama</button>
+      <button onclick="switchTab('senarai')" id="dt-nav-senarai" class="nav-item w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm"><i class="fa-solid fa-list-check w-5"></i> Senarai Kematian</button>
+      <button onclick="switchTab('cetak')" id="dt-nav-cetak" class="nav-item w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm"><i class="fa-solid fa-print w-5"></i> Cetak Rekod</button>
+      <button onclick="switchTab('tetapan')" id="dt-nav-tetapan" class="nav-item w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm"><i class="fa-solid fa-gear w-5"></i> Tetapan</button>
     </nav>
+  </aside>
 
-    <!-- Main Content Layout -->
-    <div class="max-w-7xl w-full mx-auto flex-1 flex flex-col md:flex-row p-3 md:p-6 gap-6">
+  <!-- Dynamic Main Views -->
+  <main class="flex-1 space-y-6">
+    <!-- ================= UTAMA : ANALISIS KEMATIAN ================= -->
+    <section id="page-utama" class="page-content space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-chart-line text-brand"></i> Analisa Rekod Kematian</h3>
+        <button onclick="openFormModal()" class="btn-custom w-full sm:w-1/2 md:w-auto text-xs py-2 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Tambah Kematian</button>
+      </div>
 
-        <!-- Sidebar Navigation for Desktop -->
-        <aside class="hidden md:block w-64 bg-white rounded-2xl p-4 shadow-sm border border-gray-200 h-fit no-print">
-            <div class="bg-brand text-white p-4 rounded-xl mb-6 shadow-sm">
-                <h2 id="sidebar-nama-tabung" class="font-bold text-xs uppercase leading-snug">MASJID AL - IDRISI<br>MUKIM BANGGOL SETOL</h2>
-                <p class="text-xs text-blue-200 mt-1">Tabung Khairat Kematian</p>
-            </div>
-            <nav class="space-y-2">
-                <button onclick="switchTab('utama')" id="dt-nav-utama" class="nav-item active w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm">
-                    <i class="fa-solid fa-chart-pie w-5"></i> Utama
-                </button>
-                <button onclick="switchTab('senarai')" id="dt-nav-senarai" class="nav-item w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm">
-                    <i class="fa-solid fa-list-check w-5"></i> Senarai Kematian
-                </button>
-                <button onclick="switchTab('cetak')" id="dt-nav-cetak" class="nav-item w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm">
-                    <i class="fa-solid fa-print w-5"></i> Cetak Rekod
-                </button>
-                <button onclick="switchTab('tetapan')" id="dt-nav-tetapan" class="nav-item w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm">
-                    <i class="fa-solid fa-gear w-5"></i> Tetapan
-                </button>
-            </nav>
-        </aside>
-
-        <!-- Dynamic Main Views -->
-        <main class="flex-1 space-y-6">
-
-            <!-- ================= UTAMA : ANALISIS KEMATIAN ================= -->
-            <section id="page-utama" class="page-content space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-line text-brand"></i> Analisa Rekod Kematian
-                    </h3>
-                    <button onclick="openFormModal()" class="btn-custom w-full sm:w-1/2 md:w-auto text-xs py-2 px-4 shadow-sm">
-                        <i class="fa-solid fa-plus"></i> Tambah Kematian
-                    </button>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-brand">
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Jumlah Keseluruhan Kematian</p>
-                        <h3 id="stat-total" class="text-3xl font-extrabold text-gray-800 mt-2">0</h3>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-brand">
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Kematian Tahun Ini (<span id="stat-year-label">2026</span>)</p>
-                        <h3 id="stat-year" class="text-3xl font-extrabold text-gray-800 mt-2">0</h3>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-brand">
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Kampung Tertinggi</p>
-                        <h3 id="stat-top-kampung" class="text-xl font-bold text-gray-800 mt-2 truncate">-</h3>
-                    </div>
-                </div>
-
-                <!-- Chart Card -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
-                    <h4 class="font-semibold text-gray-700 mb-4 text-sm">
-                        <i class="fa-solid fa-chart-bar mr-2 text-brand"></i>Taburan Kematian Mengikut Kampung
-                    </h4>
-                    <div class="h-64 relative">
-                        <canvas id="chartKampung"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ================= SENARAI KEMATIAN ================= -->
-            <section id="page-senarai" class="page-content space-y-6 hidden">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fa-solid fa-book text-brand"></i> Senarai Rekod Kematian
-                    </h3>
-                    <button onclick="openFormModal()" class="btn-custom w-full sm:w-1/2 md:w-auto text-xs py-2 px-4 shadow-sm">
-                        <i class="fa-solid fa-plus"></i> Tambah Kematian
-                    </button>
-                </div>
-
-                <!-- WhatsApp Notification Buttons & Latest Record Card -->
-                <div class="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 space-y-4">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-3">
-                        <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>Data Terkini Kematian
-                        </h4>
-                        <!-- WhatsApp Action Buttons -->
-                        <div class="flex flex-wrap gap-1.5 w-full sm:w-auto">
-                            <button onclick="sendWhatsApp('pengerusi')" class="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 text-white text-[11px] font-semibold py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 shadow-sm text-center leading-tight">
-                                <i class="fa-brands fa-whatsapp text-base"></i><span>WhatsApp<br>Pengerusi TKK</span>
-                            </button>
-                            <button onclick="sendWhatsApp('su')" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 shadow-sm text-center leading-tight">
-                                <i class="fa-brands fa-whatsapp text-base"></i><span>WhatsApp<br>SU TKK</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Single Latest Record Table -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
-                            <thead>
-                                <tr class="bg-brand text-white border-b">
-                                    <th class="p-2">Bil Kematian</th>
-                                    <th class="p-2">Nama Arwah</th>
-                                    <th class="p-2">Kampung</th>
-                                    <th class="p-2">Tarikh & Hari</th>
-                                    <th class="p-2">Masa Kematian</th>
-                                    <th class="p-2">Solat Jenazah</th>
-                                    <th class="p-2">Tempat Perkuburan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="latest-record-body">
-                                <tr>
-                                    <td colspan="7" class="p-4 text-center text-gray-400">Tiada rekod kematian dimasukkan lagi.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Smart Search Section -->
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
-                    <label class="block text-xs font-bold text-gray-700 mb-2">
-                        <i class="fa-solid fa-magnifying-glass text-brand mr-1"></i> Carian Pintar
-                    </label>
-                    <div class="relative">
-                        <input type="text" id="smart-search-input" onkeyup="filterRecords()" placeholder="Cari Nama Arwah, No Bil, Kampung, Tarikh atau Tempat..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand focus:outline-none">
-                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-gray-400"></i>
-                    </div>
-                </div>
-
-                <!-- Main Record Table -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="p-3 bg-brand text-white border-b flex justify-between items-center">
-                        <h4 class="font-bold text-xs sm:text-sm tracking-wide">| SENARAI REKOD KEMATIAN TERPERINCI</h4>
-                        <span id="record-count-badge" class="text-[10px] sm:text-xs bg-white/20 text-white font-bold px-2 py-0.5 rounded-full">0 Rekod</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse table-umum">
-                            <thead>
-                                <tr class="bg-brand text-white border-b border-blue-900 font-bold whitespace-nowrap">
-                                    <th class="p-2 sm:p-2.5">Bil</th>
-                                    <th class="p-2 sm:p-2.5">Nama Arwah</th>
-                                    <th class="p-2 sm:p-2.5">Bil Kematian</th>
-                                    <th class="p-2 sm:p-2.5">Kampung</th>
-                                    <th class="p-2 sm:p-2.5">Tarikh Kematian</th>
-                                    <th class="p-2 sm:p-2.5">Hari</th>
-                                    <th class="p-2 sm:p-2.5">Masa Kematian</th>
-                                    <th class="p-2 sm:p-2.5">Masa Solat Jenazah</th>
-                                    <th class="p-2 sm:p-2.5">Tempat Perkuburan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="general-table-body" class="divide-y divide-gray-200">
-                                <!-- Dynamic Rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ================= CETAK ================= -->
-            <section id="page-cetak" class="page-content space-y-6 hidden">
-                <div class="space-y-3 no-print">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Cetak Senarai Rekod Kematian</h3>
-                        <p class="text-xs text-gray-500">Pratonton paparan cetakan untuk kertas A4 (Lanskap)</p>
-                    </div>
-                    <div>
-                        <button onclick="window.print()" class="btn-custom w-full sm:w-1/2 md:w-1/3 text-xs py-2 px-4 shadow-sm">
-                            <i class="fa-solid fa-print"></i> Cetak Sekarang (A4)
-                        </button>
-                    </div>
-                </div>
-
-                <div class="print-container bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                    <div class="print-header text-center mb-4 pb-3 border-b border-gray-300">
-                        <h2 id="print-header-title" class="text-xl font-bold text-gray-900 uppercase tracking-tight">MASJID AL - IDRISI MUKIM BANGGOL SETOL</h2>
-                        <p id="print-header-sub" class="text-sm font-semibold text-gray-600">TABUNG KHAIRAT KEMATIAN</p>
-                        <p class="text-xs text-gray-400 mt-0.5">Dicetak pada: <span id="print-timestamp"></span></p>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse border border-gray-300">
-                            <thead>
-                                <tr class="bg-gray-600 text-white font-bold border-b border-gray-300 text-center">
-                                    <th class="p-2 border border-gray-300 text-center">Bil</th>
-                                    <th class="p-2 border border-gray-300 text-center">Nama Arwah</th>
-                                    <th class="p-2 border border-gray-300 text-center">Bil Kematian</th>
-                                    <th class="p-2 border border-gray-300 text-center">Kampung</th>
-                                    <th class="p-2 border border-gray-300 text-center">Tarikh</th>
-                                    <th class="p-2 border border-gray-300 text-center">Hari</th>
-                                    <th class="p-2 border border-gray-300 text-center">Masa</th>
-                                    <th class="p-2 border border-gray-300 text-center">Solat Jenazah</th>
-                                    <th class="p-2 border border-gray-300 text-center">Tempat Perkuburan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="print-table-body">
-                                <!-- Print Rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ================= TETAPAN ================= -->
-            <section id="page-tetapan" class="page-content space-y-6 hidden">
-                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-brand"></i> Tetapan Sistem Tabung Khairat
-                </h3>
-
-                <!-- 1. Maklumat Tabung Khairat -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-4">
-                    <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-hospital-user text-brand"></i> 1. Maklumat Tabung Khairat
-                    </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Organisasi / Tabung Khairat</label>
-                            <input type="text" id="setting-nama-tabung" value="Masjid Al - Idrisi Mukim Banggol Setol" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Sub-Tajuk / Keterangan</label>
-                            <input type="text" id="setting-sub-tabung" value="Tabung Khairat Kematian" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                        </div>
-                    </div>
-                    <button onclick="saveSettingInfo()" class="btn-custom text-xs">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan Maklumat Tabung
-                    </button>
-                </div>
-
-                <!-- 2. Pengurusan Rekod & WhatsApp -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-                    <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-brand"></i> 2. Pengurusan Rekod & Tetapan WhatsApp
-                    </h4>
-
-                    <!-- WhatsApp Settings -->
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">No WhatsApp Pengerusi TKK</label>
-                                <input type="text" id="setting-wa-pengerusi" placeholder="Contoh: 60123456789" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">No WhatsApp SU TKK</label>
-                                <input type="text" id="setting-wa-su" placeholder="Contoh: 60198765432" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                            </div>
-                        </div>
-                        <button onclick="saveWhatsAppNumbers()" class="bg-brand text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-brand-dark transition shadow flex items-center gap-2">
-                            <i class="fa-solid fa-phone"></i> Kemaskini No WhatsApp
-                        </button>
-                    </div>
-
-                    <!-- Manual Record Operations -->
-                    <div class="space-y-4 pt-2 border-t">
-                        <!-- Box Edit Manual -->
-                        <div class="bg-gray-50/80 p-4 rounded-2xl border border-gray-200 space-y-3">
-                            <label class="block text-xs font-bold text-gray-800">Kemaskini Rekod Manual</label>
-                            <div class="flex flex-col gap-3">
-                                <input type="text" id="input-edit-bil" placeholder="Masukkan Bil Kematian (Cth: 643 (30/2026))" class="w-full p-3 text-xs bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand">
-                                <button onclick="triggerEditByBil()" class="w-full bg-brand text-white py-2.5 px-4 rounded-xl text-xs font-bold hover:bg-brand-dark transition shadow text-center">Cari & Edit</button>
-                            </div>
-                        </div>
-
-                        <!-- Box Hapus Manual -->
-                        <div class="bg-red-50/50 p-4 rounded-2xl border border-red-100 space-y-3">
-                            <label class="block text-xs font-bold text-red-800">Hapus Rekod Manual</label>
-                            <div class="flex flex-col gap-3">
-                                <input type="text" id="input-delete-bil" placeholder="Masukkan Bil Kematian" class="w-full p-3 text-xs bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
-                                <button onclick="triggerDeleteByBil()" class="w-full bg-red-600 text-white py-2.5 px-4 rounded-xl text-xs font-bold hover:bg-red-700 transition shadow text-center">Hapus Rekod</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. Sandaran JSON -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-4">
-                    <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-database text-brand"></i> 3. Sandaran Data JSON
-                    </h4>
-                    <p class="text-xs text-gray-500">Muat turun sandaran data sistem atau muat naik fail JSON untuk memulihkan data.</p>
-                    <div class="flex flex-wrap gap-3">
-                        <button onclick="exportJSON()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow">
-                            <i class="fa-solid fa-download"></i> Eksport Data JSON
-                        </button>
-                        <label class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 shadow">
-                            <i class="fa-solid fa-upload"></i> Import Data JSON
-                            <input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- LENCANA HAK CIPTA TETAPAN -->
-                <div class="pt-2 flex justify-center">
-                    <div class="inline-block bg-orange-50/80 border border-amber-300 text-amber-900 font-semibold px-6 py-2 rounded-2xl text-[9pt] shadow-sm">
-                        sistemtkk©asri2026
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <!-- ================= MODAL BORANG TAMBAH / EDIT KEMATIAN ================= -->
-    <div id="form-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="bg-brand text-white p-4 flex justify-between items-center">
-                <h3 id="modal-title" class="font-bold text-base"><i class="fa-solid fa-user-plus mr-2"></i>Tambah Rekod Kematian</h3>
-                <button onclick="closeFormModal()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <form id="death-form" onsubmit="handleFormSubmit(event)" class="p-5 overflow-y-auto space-y-4 text-xs">
-                <input type="hidden" id="form-id">
-
-                <!-- Nombor Bil Auto Display -->
-                <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex justify-between items-center">
-                    <div>
-                        <span class="text-gray-500 font-medium block">Bil Kematian Auto:</span>
-                        <span id="form-bil-display" class="text-brand font-bold text-sm">644 (31/2026)</span>
-                    </div>
-                    <span class="text-[10px] text-gray-400">Dijana Secara Automatik</span>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">Nama Arwah <span class="text-red-500">*</span></label>
-                    <input type="text" id="form-nama" required placeholder="Contoh: Zubaidah bt Daud" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">Kampung / Alamat <span class="text-red-500">*</span></label>
-                        <select id="form-kampung" onchange="toggleManualInput('kampung')" required class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                            <option value="">-- Pilih Kampung --</option>
-                            <option value="Lubok Kawah Dalam">Lubok Kawah Dalam</option>
-                            <option value="Surau">Surau</option>
-                            <option value="Pondok">Pondok</option>
-                            <option value="Berek 12">Berek 12</option>
-                            <option value="Bgl Kuin">Bgl Kuin</option>
-                            <option value="Alor Lenggak">Alor Lenggak</option>
-                            <option value="Pak Jak">Pak Jak</option>
-                            <option value="Machang Bubuk">Machang Bubuk</option>
-                            <option value="Lumpur">Lumpur</option>
-                            <option value="Mengkirim">Mengkirim</option>
-                            <option value="Lbk Kawah Luar">Lbk Kawah Luar</option>
-                            <option value="Lbk Kawah Hilir">Lbk Kawah Hilir</option>
-                            <option value="Chenerai">Chenerai</option>
-                            <option value="Lubok Puyu">Lubok Puyu</option>
-                            <option value="Lain-lain">Lain-lain</option>
-                        </select>
-                        <input type="text" id="form-kampung-manual" placeholder="Tulis nama kampung..." class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand mt-2 hidden">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">Tarikh Kematian <span class="text-red-500">*</span></label>
-                        <input type="date" id="form-tarikh" onchange="calculateDayFromDate()" required class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">Hari (Automatik)</label>
-                        <input type="text" id="form-hari" readonly class="w-full p-2.5 text-sm bg-gray-100 border rounded-xl font-bold text-brand">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">Masa Kematian</label>
-                        <input type="time" id="form-masa-kematian" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">Masa Solat Jenazah</label>
-                        <input type="time" id="form-masa-solat" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <!-- LOKASI SOLAT JENAZAH PILIHAN -->
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">Lokasi Solat Jenazah</label>
-                        <select id="form-lokasi-solat-select" onchange="toggleManualInput('lokasi')" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                            <option value="">-- Pilih Lokasi Solat --</option>
-                            <option value="Masjid Al - Idrisi Mukim Bgl Setol">Masjid Al - Idrisi Mukim Bgl Setol</option>
-                            <option value="Masjid Pondok">Masjid Pondok</option>
-                            <option value="Masjid Hj Yaakob Lumpur">Masjid Hj Yaakob Lumpur</option>
-                            <option value="Madrasah Pak Jak">Madrasah Pak Jak</option>
-                            <option value="Madrasah Gebeng">Madrasah Gebeng</option>
-                            <option value="Masjid lbk Kawah dalam">Masjid lbk Kawah dalam</option>
-                            <option value="Masjid lbk Kawah luar (hijau)">Masjid lbk Kawah luar (hijau)</option>
-                            <option value="Lain-lain">Lain-lain</option>
-                        </select>
-                        <input type="text" id="form-lokasi-solat-manual" placeholder="Tulis lokasi solat jenazah..." class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand mt-2 hidden">
-                    </div>
-
-                    <!-- TEMPAT PERKUBURAN -->
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">Tempat Perkuburan <span class="text-red-500">*</span></label>
-                        <select id="form-tempat" onchange="toggleManualInput('tempat')" required class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
-                            <option value="">-- Pilih Tempat Perkuburan --</option>
-                            <option value="Tanah Perkuburan Islam Pondok">Tanah Perkuburan Islam Pondok</option>
-                            <option value="Tanah Perkuburan Islam Lbk Kawah Dalam">Tanah Perkuburan Islam Lbk Kawah Dalam</option>
-                            <option value="Tanah Perkuburan Islam Siram">Tanah Perkuburan Islam Siram</option>
-                            <option value="Lain-lain">Lain-lain</option>
-                        </select>
-                        <input type="text" id="form-tempat-manual" placeholder="Tulis nama tempat perkuburan..." class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand mt-2 hidden">
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t flex justify-end gap-2">
-                    <button type="button" onclick="closeFormModal()" class="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-200 rounded-xl hover:bg-gray-300">Batal</button>
-                    <button type="submit" class="btn-custom text-xs">Simpan Rekod</button>
-                </div>
-            </form>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-brand">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Jumlah Keseluruhan Kematian</p>
+          <h3 id="stat-total" class="text-3xl font-extrabold text-gray-800 mt-2">0</h3>
         </div>
-    </div>
-
-    <!-- MODAL PENGESAHAN HAPUS DALAM SISTEM -->
-    <div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
-            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <h4 class="text-base font-bold text-gray-800">Pengesahan Hapus</h4>
-            <p class="text-xs text-gray-600">Adakah anda pasti untuk menghapus rekod kematian ini?</p>
-            <div class="flex gap-3 justify-center pt-2">
-                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold rounded-xl transition">Batal</button>
-                <button id="confirm-delete-btn" class="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow">OK</button>
-            </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-brand">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Kematian Tahun Ini (<span id="stat-year-label">2026</span>)</p>
+          <h3 id="stat-year" class="text-3xl font-extrabold text-gray-800 mt-2">0</h3>
         </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-brand">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Kampung Tertinggi</p>
+          <h3 id="stat-top-kampung" class="text-xl font-bold text-gray-800 mt-2 truncate">-</h3>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+        <h4 class="font-semibold text-gray-700 mb-4 text-sm"><i class="fa-solid fa-chart-bar mr-2 text-brand"></i>Taburan Kematian Mengikut Kampung</h4>
+        <div class="h-64 relative"><canvas id="chartKampung"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ================= SENARAI KEMATIAN ================= -->
+    <section id="page-senarai" class="page-content space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-book text-brand"></i> Senarai Rekod Kematian</h3>
+        <button onclick="openFormModal()" class="btn-custom w-full sm:w-1/2 md:w-auto text-xs py-2 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Tambah Kematian</button>
+      </div>
+
+      <!-- WhatsApp Notification Buttons & Latest Record Card -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-3">
+          <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>Data Terkini Kematian</h4>
+          <div class="flex flex-wrap gap-1.5 w-full sm:w-auto">
+            <button onclick="sendWhatsApp('pengerusi')" class="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 text-white text-[11px] font-semibold py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 shadow-sm text-center leading-tight"><i class="fa-brands fa-whatsapp text-base"></i><span>WhatsApp<br>Pengerusi TKK</span></button>
+            <button onclick="sendWhatsApp('su')" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 shadow-sm text-center leading-tight"><i class="fa-brands fa-whatsapp text-base"></i><span>WhatsApp<br>SU TKK</span></button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-brand text-white border-b">
+                <th class="p-2">Bil Kematian</th>
+                <th class="p-2">Nama Arwah</th>
+                <th class="p-2">Kampung</th>
+                <th class="p-2">Tarikh & Hari</th>
+                <th class="p-2">Masa Kematian</th>
+                <th class="p-2">Solat Jenazah</th>
+                <th class="p-2">Tempat Perkuburan</th>
+              </tr>
+            </thead>
+            <tbody id="latest-record-body">
+              <tr><td colspan="7" class="p-4 text-center text-gray-400">Tiada rekod kematian dimasukkan lagi.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Smart Search Section -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
+        <label class="block text-xs font-bold text-gray-700 mb-2"><i class="fa-solid fa-magnifying-glass text-brand mr-1"></i> Carian Pintar</label>
+        <div class="relative">
+          <input type="text" id="smart-search-input" onkeyup="filterRecords()" placeholder="Cari Nama Arwah, No Bil, Kampung, Tarikh atau Tempat..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand focus:outline-none">
+          <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-gray-400"></i>
+        </div>
+      </div>
+
+      <!-- Main Record Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-3 bg-brand text-white border-b flex justify-between items-center">
+          <h4 class="font-bold text-xs sm:text-sm tracking-wide">| SENARAI REKOD KEMATIAN TERPERINCI</h4>
+          <span id="record-count-badge" class="text-[10px] sm:text-xs bg-white/20 text-white font-bold px-2 py-0.5 rounded-full">0 Rekod</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse table-umum">
+            <thead>
+              <tr class="bg-brand text-white border-b border-blue-900 font-bold whitespace-nowrap">
+                <th class="p-2 sm:p-2.5">Bil</th>
+                <th class="p-2 sm:p-2.5">Nama Arwah</th>
+                <th class="p-2 sm:p-2.5">Bil Kematian</th>
+                <th class="p-2 sm:p-2.5">Kampung</th>
+                <th class="p-2 sm:p-2.5">Tarikh Kematian</th>
+                <th class="p-2 sm:p-2.5">Hari</th>
+                <th class="p-2 sm:p-2.5">Masa Kematian</th>
+                <th class="p-2 sm:p-2.5">Masa Solat Jenazah</th>
+                <th class="p-2 sm:p-2.5">Tempat Perkuburan</th>
+              </tr>
+            </thead>
+            <tbody id="general-table-body" class="divide-y divide-gray-200">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CETAK ================= -->
+    <section id="page-cetak" class="page-content space-y-6 hidden">
+      <div class="space-y-3 no-print">
+        <div>
+          <h3 class="text-xl font-bold text-gray-800">Cetak Senarai Rekod Kematian</h3>
+          <p class="text-xs text-gray-500">Pratonton paparan cetakan untuk kertas A4 (Lanskap)</p>
+        </div>
+        <div>
+          <button onclick="window.print()" class="btn-custom w-full sm:w-1/2 md:w-1/3 text-xs py-2 px-4 shadow-sm"><i class="fa-solid fa-print"></i> Cetak Sekarang (A4)</button>
+        </div>
+      </div>
+      <div class="print-container bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+        <div class="print-header text-center mb-4 pb-3 border-b border-gray-300">
+          <h2 id="print-header-title" class="text-xl font-bold text-gray-900 uppercase tracking-tight">MASJID AL - IDRISI MUKIM BANGGOL SETOL</h2>
+          <p id="print-header-sub" class="text-sm font-semibold text-gray-600">TABUNG KHAIRAT KEMATIAN</p>
+          <p class="text-xs text-gray-400 mt-0.5">Dicetak pada: <span id="print-timestamp"></span></p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse border border-gray-300">
+            <thead>
+              <tr class="bg-gray-600 text-white font-bold border-b border-gray-300 text-center">
+                <th class="p-2 border border-gray-300 text-center">Bil</th>
+                <th class="p-2 border border-gray-300 text-center">Nama Arwah</th>
+                <th class="p-2 border border-gray-300 text-center">Bil Kematian</th>
+                <th class="p-2 border border-gray-300 text-center">Kampung</th>
+                <th class="p-2 border border-gray-300 text-center">Tarikh</th>
+                <th class="p-2 border border-gray-300 text-center">Hari</th>
+                <th class="p-2 border border-gray-300 text-center">Masa</th>
+                <th class="p-2 border border-gray-300 text-center">Solat Jenazah</th>
+                <th class="p-2 border border-gray-300 text-center">Tempat Perkuburan</th>
+              </tr>
+            </thead>
+            <tbody id="print-table-body">
+              <!-- Print Rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TETAPAN ================= -->
+    <section id="page-tetapan" class="page-content space-y-6 hidden">
+      <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-sliders text-brand"></i> Tetapan Sistem Tabung Khairat</h3>
+
+      <!-- 1. Maklumat Tabung Khairat -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-4">
+        <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-hospital-user text-brand"></i> 1. Maklumat Tabung Khairat</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Organisasi / Tabung Khairat</label>
+            <input type="text" id="setting-nama-tabung" value="Masjid Al - Idrisi Mukim Banggol Setol" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Sub-Tajuk / Keterangan</label>
+            <input type="text" id="setting-sub-tabung" value="Tabung Khairat Kematian" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+          </div>
+        </div>
+        <button onclick="saveSettingInfo()" class="btn-custom text-xs"><i class="fa-solid fa-floppy-disk"></i> Simpan Maklumat Tabung</button>
+      </div>
+
+      <!-- 2. Pengurusan Rekod & WhatsApp -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+        <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-list-check text-brand"></i> 2. Pengurusan Rekod & Tetapan WhatsApp</h4>
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">No WhatsApp Pengerusi TKK</label>
+              <input type="text" id="setting-wa-pengerusi" placeholder="Contoh: 60123456789" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">No WhatsApp SU TKK</label>
+              <input type="text" id="setting-wa-su" placeholder="Contoh: 60198765432" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+            </div>
+          </div>
+          <button onclick="saveWhatsAppNumbers()" class="bg-brand text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-brand-dark transition shadow flex items-center gap-2"><i class="fa-solid fa-phone"></i> Kemaskini No WhatsApp</button>
+        </div>
+
+        <div class="space-y-4 pt-2 border-t">
+          <!-- Box Edit Manual -->
+          <div class="bg-gray-50/80 p-4 rounded-2xl border border-gray-200 space-y-3">
+            <label class="block text-xs font-bold text-gray-800">Kemaskini Rekod Manual</label>
+            <div class="flex flex-col gap-3">
+              <input type="text" id="input-edit-bil" placeholder="Masukkan Bil Kematian (Cth: 643 (30/2026))" class="w-full p-3 text-xs bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand">
+              <button onclick="triggerEditByBil()" class="w-full bg-brand text-white py-2.5 px-4 rounded-xl text-xs font-bold hover:bg-brand-dark transition shadow text-center">Cari & Edit</button>
+            </div>
+          </div>
+
+          <!-- Box Hapus Manual -->
+          <div class="bg-red-50/50 p-4 rounded-2xl border border-red-100 space-y-3">
+            <label class="block text-xs font-bold text-red-800">Hapus Rekod Manual</label>
+            <div class="flex flex-col gap-3">
+              <input type="text" id="input-delete-bil" placeholder="Masukkan Bil Kematian" class="w-full p-3 text-xs bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+              <button onclick="triggerDeleteByBil()" class="w-full bg-red-600 text-white py-2.5 px-4 rounded-xl text-xs font-bold hover:bg-red-700 transition shadow text-center">Hapus Rekod</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Sandaran JSON -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-4">
+        <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-database text-brand"></i> 3. Sandaran Data JSON</h4>
+        <p class="text-xs text-gray-500">Muat turun sandaran data sistem atau muat naik fail JSON untuk memulihkan data.</p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="exportJSON()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow"><i class="fa-solid fa-download"></i> Eksport Data JSON</button>
+          <label class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 shadow"><i class="fa-solid fa-upload"></i> Import Data JSON<input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)"></label>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-center">
+        <div class="inline-block bg-orange-50/80 border border-amber-300 text-amber-900 font-semibold px-6 py-2 rounded-2xl text-[9pt] shadow-sm">sistemtkk©asri2026</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ================= MODAL BORANG TAMBAH / EDIT KEMATIAN ================= -->
+<div id="form-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+  <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div class="bg-brand text-white p-4 flex justify-between items-center">
+      <h3 id="modal-title" class="font-bold text-base"><i class="fa-solid fa-user-plus mr-2"></i>Tambah Rekod Kematian</h3>
+      <button onclick="closeFormModal()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
     </div>
+    <form id="death-form" onsubmit="handleFormSubmit(event)" class="p-5 overflow-y-auto space-y-4 text-xs">
+      <input type="hidden" id="form-id">
+      
+      <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex justify-between items-center">
+        <div>
+          <span class="text-gray-500 font-medium block">Bil Kematian Auto:</span>
+          <span id="form-bil-display" class="text-brand font-bold text-sm">644 (31/2026)</span>
+        </div>
+        <span class="text-[10px] text-gray-400">Dijana Secara Automatik</span>
+      </div>
 
-    <!-- Notification Toast Container -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white text-xs px-4 py-3 rounded-xl shadow-lg transition duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
-        <i class="fa-solid fa-circle-info text-green-400"></i>
-        <span id="toast-message">Mesej Notifikasi</span>
+      <div>
+        <label class="block font-bold text-gray-700 mb-1">Nama Arwah <span class="text-red-500">*</span></label>
+        <input type="text" id="form-nama" required placeholder="Contoh: Zubaidah bt Daud" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Kampung / Alamat <span class="text-red-500">*</span></label>
+          <select id="form-kampung" onchange="toggleManualInput('kampung')" required class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+            <option value="">-- Pilih Kampung --</option>
+            <option value="Lubok Kawah Dalam">Lubok Kawah Dalam</option>
+            <option value="Surau">Surau</option>
+            <option value="Pondok">Pondok</option>
+            <option value="Berek 12">Berek 12</option>
+            <option value="Bgl Kuin">Bgl Kuin</option>
+            <option value="Alor Lenggak">Alor Lenggak</option>
+            <option value="Pak Jak">Pak Jak</option>
+            <option value="Machang Bubuk">Machang Bubuk</option>
+            <option value="Lumpur">Lumpur</option>
+            <option value="Mengkirim">Mengkirim</option>
+            <option value="Lbk Kawah Luar">Lbk Kawah Luar</option>
+            <option value="Lbk Kawah Hilir">Lbk Kawah Hilir</option>
+            <option value="Chenerai">Chenerai</option>
+            <option value="Lubok Puyu">Lubok Puyu</option>
+            <option value="Lain-lain">Lain-lain</option>
+          </select>
+          <input type="text" id="form-kampung-manual" placeholder="Tulis nama kampung..." class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand mt-2 hidden">
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Tarikh Kematian <span class="text-red-500">*</span></label>
+          <input type="date" id="form-tarikh" onchange="calculateDayFromDate()" required class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Hari (Automatik)</label>
+          <input type="text" id="form-hari" readonly class="w-full p-2.5 text-sm bg-gray-100 border rounded-xl font-bold text-brand">
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Masa Kematian</label>
+          <input type="time" id="form-masa-kematian" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Masa Solat Jenazah</label>
+          <input type="time" id="form-masa-solat" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Lokasi Solat Jenazah</label>
+          <select id="form-lokasi-solat-select" onchange="toggleManualInput('lokasi')" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+            <option value="">-- Pilih Lokasi Solat --</option>
+            <option value="Masjid Al - Idrisi Mukim Bgl Setol">Masjid Al - Idrisi Mukim Bgl Setol</option>
+            <option value="Masjid Pondok">Masjid Pondok</option>
+            <option value="Masjid Hj Yaakob Lumpur">Masjid Hj Yaakob Lumpur</option>
+            <option value="Madrasah Pak Jak">Madrasah Pak Jak</option>
+            <option value="Madrasah Gebeng">Madrasah Gebeng</option>
+            <option value="Masjid lbk Kawah dalam">Masjid lbk Kawah dalam</option>
+            <option value="Masjid lbk Kawah luar (hijau)">Masjid lbk Kawah luar (hijau)</option>
+            <option value="Lain-lain">Lain-lain</option>
+          </select>
+          <input type="text" id="form-lokasi-solat-manual" placeholder="Tulis lokasi solat jenazah..." class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand mt-2 hidden">
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Tempat Perkuburan <span class="text-red-500">*</span></label>
+          <select id="form-tempat" onchange="toggleManualInput('tempat')" required class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
+            <option value="">-- Pilih Tempat Perkuburan --</option>
+            <option value="Tanah Perkuburan Islam Pondok">Tanah Perkuburan Islam Pondok</option>
+            <option value="Tanah Perkuburan Islam Lbk Kawah Dalam">Tanah Perkuburan Islam Lbk Kawah Dalam</option>
+            <option value="Tanah Perkuburan Islam Siram">Tanah Perkuburan Islam Siram</option>
+            <option value="Lain-lain">Lain-lain</option>
+          </select>
+          <input type="text" id="form-tempat-manual" placeholder="Tulis nama tempat perkuburan..." class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand mt-2 hidden">
+        </div>
+      </div>
+
+      <div class="pt-4 border-t flex justify-end gap-2">
+        <button type="button" onclick="closeFormModal()" class="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-200 rounded-xl hover:bg-gray-300">Batal</button>
+        <button type="submit" class="btn-custom text-xs">Simpan Rekod</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL PENGESAHAN HAPUS DALAM SISTEM -->
+<div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
+    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-xl">
+      <i class="fa-solid fa-triangle-exclamation"></i>
     </div>
+    <h4 class="text-base font-bold text-gray-800">Pengesahan Hapus</h4>
+    <p class="text-xs text-gray-600">Adakah anda pasti untuk menghapus rekod kematian ini?</p>
+    <div class="flex gap-3 justify-center pt-2">
+      <button onclick="closeConfirmModal()" class="flex-1 py-2.5 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold rounded-xl transition">Batal</button>
+      <button id="confirm-delete-btn" class="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow">OK</button>
+    </div>
+  </div>
+</div>
 
-    <!-- Main Logic Script -->
-    <script>
-        // Default App State
-        let records = [];
-        let chartInstance = null;
-        let recordToDeleteId = null;
-        let currentActiveTab = 'utama';
+<!-- Notification Toast Container -->
+<div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white text-xs px-4 py-3 rounded-xl shadow-lg transition duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
+  <i class="fa-solid fa-circle-info text-green-400"></i>
+  <span id="toast-message">Mesej Notifikasi</span>
+</div>
 
-        let settings = {
-            namaTabung: "Masjid Al - Idrisi Mukim Banggol Setol",
-            subTabung: "Tabung Khairat Kematian",
-            waPengerusi: "60123456789",
-            waSU: "60198765432"
-        };
+<!-- Main Logic Script -->
+<script>
+let records = [];
+let chartInstance = null;
+let recordToDeleteId = null;
+let currentActiveTab = 'utama';
 
-        function formatTime12H(time24) {
-            if (!time24) return '-';
-            if (/[a-zA-Z]/.test(time24)) return time24;
-            const [hoursStr, minutesStr] = time24.split(':');
-            let hours = parseInt(hoursStr, 10);
-            const minutes = minutesStr || '00';
-            if (isNaN(hours)) return time24;
-            let suffix = 'pg';
-            if (hours >= 12 && hours < 19) {
-                suffix = 'ptg';
-            } else if (hours >= 19 || hours < 5) {
-                suffix = 'mlm';
-            } else {
-                suffix = 'pg';
-            }
-            let hours12 = hours % 12;
-            if (hours12 === 0) hours12 = 12;
-            const formattedHours = hours12 < 10 ? '0' + hours12 : hours12;
-            return `${formattedHours}:${minutes} ${suffix}`;
-        }
+let settings = {
+  namaTabung: "Masjid Al - Idrisi Mukim Banggol Setol",
+  subTabung: "Tabung Khairat Kematian",
+  waPengerusi: "60123456789",
+  waSU: "60198765432"
+};
 
-        window.onload = function() {
-            loadLocalSettings();
-            updateCurrentDate();
-            loadLocalRecords();
-            initChart();
-            renderAllViews();
+function formatTime12H(time24) {
+  if (!time24) return '-';
+  if (/[a-zA-Z]/.test(time24)) return time24;
+  const [hoursStr, minutesStr] = time24.split(':');
+  let hours = parseInt(hoursStr, 10);
+  const minutes = minutesStr || '00';
+  if (isNaN(hours)) return time24;
+  let suffix = 'pg';
+  if (hours >= 12 && hours < 19) {
+    suffix = 'ptg';
+  } else if (hours >= 19 || hours < 5) {
+    suffix = 'mlm';
+  } else {
+    suffix = 'pg';
+  }
+  let hours12 = hours % 12;
+  if (hours12 === 0) hours12 = 12;
+  const formattedHours = hours12 < 10 ? '0' + hours12 : hours12;
+  return `${formattedHours}:${minutes} ${suffix}`;
+}
 
-            // Sedia kan Sejarah Pelayar (History Stack) secara Khas
-            history.replaceState({ page: 'exit' }, "", "");
-            history.pushState({ page: 'utama' }, "", "");
+window.onload = function() {
+  loadLocalSettings();
+  updateCurrentDate();
+  loadLocalRecords();
+  initChart();
+  renderAllViews();
 
-            window.addEventListener('popstate', function(event) {
-                // Jika sedang berada di modal borang/pengesahan, tutup modal dahulu
-                const formModal = document.getElementById('form-modal');
-                const confirmModal = document.getElementById('confirm-modal');
-                
-                if(!formModal.classList.contains('hidden')) {
-                    closeFormModal();
-                    history.pushState({ page: currentActiveTab }, "", "");
-                    return;
-                }
-                
-                if(!confirmModal.classList.contains('hidden')) {
-                    closeConfirmModal();
-                    history.pushState({ page: currentActiveTab }, "", "");
-                    return;
-                }
+  history.replaceState({ page: 'exit' }, "", "");
+  history.pushState({ page: 'utama' }, "", "");
 
-                // Jika bukan di halaman Utama, kembalikan pengguna ke Utama dahulu
-                if (currentActiveTab !== 'utama') {
-                    switchTab('utama', false);
-                    history.pushState({ page: 'utama' }, "", "");
-                }
-                // Jika sudah berada di Utama, tekan back sekali lagi akan keluar dari aplikasi secara normal
-            });
-        };
+  window.addEventListener('popstate', function(event) {
+    const formModal = document.getElementById('form-modal');
+    const confirmModal = document.getElementById('confirm-modal');
+    if(!formModal.classList.contains('hidden')) {
+      closeFormModal();
+      history.pushState({ page: currentActiveTab }, "", "");
+      return;
+    }
+    if(!confirmModal.classList.contains('hidden')) {
+      closeConfirmModal();
+      history.pushState({ page: currentActiveTab }, "", "");
+      return;
+    }
+    if (currentActiveTab !== 'utama') {
+      switchTab('utama', false);
+      history.pushState({ page: 'utama' }, "", "");
+    }
+  });
+};
 
-        function updateCurrentDate() {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formatted = today.toLocaleDateString('ms-MY', options);
-            document.getElementById('current-date-display').innerText = formatted;
-            document.getElementById('print-timestamp').innerText = formatted;
-        }
+function updateCurrentDate() {
+  const today = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const formatted = today.toLocaleDateString('ms-MY', options);
+  document.getElementById('current-date-display').innerText = formatted;
+  document.getElementById('print-timestamp').innerText = formatted;
+}
 
-        function switchTab(tabId, updateHistory = true) {
-            currentActiveTab = tabId;
-            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`page-${tabId}`).classList.remove('hidden');
+function switchTab(tabId, updateHistory = true) {
+  currentActiveTab = tabId;
+  document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+  document.getElementById(`page-${tabId}`).classList.remove('hidden');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const activeDtNav = document.getElementById(`dt-nav-${tabId}`);
+  if(activeDtNav) activeDtNav.classList.add('active');
+  document.querySelectorAll('.mob-nav-btn').forEach(el => {
+    el.classList.remove('bg-brand', 'text-white');
+    el.classList.add('text-gray-600');
+  });
+  const activeMobNav = document.getElementById(`mob-nav-${tabId}`);
+  if(activeMobNav) {
+    activeMobNav.classList.add('bg-brand', 'text-white');
+    activeMobNav.classList.remove('text-gray-600');
+  }
+  if(tabId === 'utama') {
+    updateChart();
+  }
+  if(updateHistory && tabId !== 'utama') {
+    history.pushState({ page: tabId }, "", "");
+  }
+}
 
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const activeDtNav = document.getElementById(`dt-nav-${tabId}`);
-            if(activeDtNav) activeDtNav.classList.add('active');
+// FUNGSI MENDAPATKAN REKOD TERKINI DENGAN TEPAT
+function getLatestRecord() {
+  if (records.length === 0) return null;
+  return [...records].sort((a, b) => {
+    if (a.timestamp && b.timestamp) {
+      return b.timestamp - a.timestamp;
+    }
+    const matchA = (a.bilKematian || '').match(/^(\d+)/);
+    const matchB = (b.bilKematian || '').match(/^(\d+)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    if (numA !== numB) return numB - numA;
+    return new Date(b.tarikh) - new Date(a.tarikh);
+  })[0];
+}
 
-            document.querySelectorAll('.mob-nav-btn').forEach(el => {
-                el.classList.remove('bg-brand', 'text-white');
-                el.classList.add('text-gray-600');
-            });
-            const activeMobNav = document.getElementById(`mob-nav-${tabId}`);
-            if(activeMobNav) {
-                activeMobNav.classList.add('bg-brand', 'text-white');
-                activeMobNav.classList.remove('text-gray-600');
-            }
+function generateBilNumber(dateString) {
+  if (records.length === 0) return `614 (1/${new Date(dateString).getFullYear()})`;
+  
+  const latestRec = getLatestRecord();
+  let lastGenNo = 643;
+  let lastYearNo = 30;
+  
+  if (latestRec && latestRec.bilKematian) {
+    const match = latestRec.bilKematian.match(/(\d+)\s*\((\d+)\/(\d+)\)/);
+    if (match) {
+      lastGenNo = parseInt(match[1], 10);
+      lastYearNo = parseInt(match[2], 10);
+    }
+  }
+  
+  const nextGenNo = lastGenNo + 1;
+  const nextYearNo = lastYearNo + 1;
+  const currentYear = new Date(dateString).getFullYear();
+  
+  return `${nextGenNo} (${nextYearNo}/${currentYear})`;
+}
 
-            if(tabId === 'utama') {
-                updateChart();
-            }
+function openFormModal(editRecord = null) {
+  const modal = document.getElementById('form-modal');
+  const form = document.getElementById('death-form');
+  form.reset();
+  document.getElementById('form-kampung-manual').classList.add('hidden');
+  document.getElementById('form-lokasi-solat-manual').classList.add('hidden');
+  document.getElementById('form-tempat-manual').classList.add('hidden');
 
-            if(updateHistory && tabId !== 'utama') {
-                history.pushState({ page: tabId }, "", "");
-            }
-        }
+  if(editRecord) {
+    document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square mr-2"></i>Kemaskini Rekod Kematian`;
+    document.getElementById('form-id').value = editRecord.id;
+    document.getElementById('form-nama').value = editRecord.nama;
 
-        function openFormModal(editRecord = null) {
-            const modal = document.getElementById('form-modal');
-            const form = document.getElementById('death-form');
-            form.reset();
+    if(['Lubok Kawah Dalam','Surau','Pondok','Berek 12','Bgl Kuin','Alor Lenggak','Pak Jak','Machang Bubuk','Lumpur','Mengkirim','Lbk Kawah Luar','Lbk Kawah Hilir','Chenerai','Lubok Puyu'].includes(editRecord.kampung)) {
+      document.getElementById('form-kampung').value = editRecord.kampung;
+    } else {
+      document.getElementById('form-kampung').value = 'Lain-lain';
+      document.getElementById('form-kampung-manual').classList.remove('hidden');
+      document.getElementById('form-kampung-manual').value = editRecord.kampung;
+    }
+    document.getElementById('form-tarikh').value = editRecord.tarikh;
+    document.getElementById('form-hari').value = editRecord.hari;
+    document.getElementById('form-masa-kematian').value = editRecord.rawMasaKematian || '';
+    document.getElementById('form-masa-solat').value = editRecord.rawMasaSolat || '';
 
-            document.getElementById('form-kampung-manual').classList.add('hidden');
-            document.getElementById('form-lokasi-solat-manual').classList.add('hidden');
-            document.getElementById('form-tempat-manual').classList.add('hidden');
+    const predefinedLokasi = ['Masjid Al - Idrisi Mukim Bgl Setol','Masjid Pondok','Masjid Hj Yaakob Lumpur','Madrasah Pak Jak','Madrasah Gebeng','Masjid lbk Kawah dalam','Masjid lbk Kawah luar (hijau)'];
+    if(predefinedLokasi.includes(editRecord.lokasiSolat)) {
+      document.getElementById('form-lokasi-solat-select').value = editRecord.lokasiSolat;
+    } else if(editRecord.lokasiSolat) {
+      document.getElementById('form-lokasi-solat-select').value = 'Lain-lain';
+      document.getElementById('form-lokasi-solat-manual').classList.remove('hidden');
+      document.getElementById('form-lokasi-solat-manual').value = editRecord.lokasiSolat;
+    }
 
-            if(editRecord) {
-                document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square mr-2"></i>Kemaskini Rekod Kematian`;
-                document.getElementById('form-id').value = editRecord.id;
-                document.getElementById('form-nama').value = editRecord.nama;
+    if(['Tanah Perkuburan Islam Pondok','Tanah Perkuburan Islam Lbk Kawah Dalam','Tanah Perkuburan Islam Siram'].includes(editRecord.tempat)) {
+      document.getElementById('form-tempat').value = editRecord.tempat;
+    } else {
+      document.getElementById('form-tempat').value = 'Lain-lain';
+      document.getElementById('form-tempat-manual').classList.remove('hidden');
+      document.getElementById('form-tempat-manual').value = editRecord.tempat;
+    }
+    document.getElementById('form-bil-display').innerText = editRecord.bilKematian;
+  } else {
+    document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-plus mr-2"></i>Tambah Rekod Kematian`;
+    document.getElementById('form-id').value = '';
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('form-tarikh').value = todayStr;
+    calculateDayFromDate();
+    const nextBil = generateBilNumber(todayStr);
+    document.getElementById('form-bil-display').innerText = nextBil;
+  }
+  modal.classList.remove('hidden');
+}
 
-                // Kampung Selection
-                if(['Lubok Kawah Dalam','Surau','Pondok','Berek 12','Bgl Kuin','Alor Lenggak','Pak Jak','Machang Bubuk','Lumpur','Mengkirim','Lbk Kawah Luar','Lbk Kawah Hilir','Chenerai','Lubok Puyu'].includes(editRecord.kampung)) {
-                    document.getElementById('form-kampung').value = editRecord.kampung;
-                } else {
-                    document.getElementById('form-kampung').value = 'Lain-lain';
-                    document.getElementById('form-kampung-manual').classList.remove('hidden');
-                    document.getElementById('form-kampung-manual').value = editRecord.kampung;
-                }
+function closeFormModal() {
+  document.getElementById('form-modal').classList.add('hidden');
+}
 
-                document.getElementById('form-tarikh').value = editRecord.tarikh;
-                document.getElementById('form-hari').value = editRecord.hari;
-                document.getElementById('form-masa-kematian').value = editRecord.rawMasaKematian || '';
-                document.getElementById('form-masa-solat').value = editRecord.rawMasaSolat || '';
+function calculateDayFromDate() {
+  const dateVal = document.getElementById('form-tarikh').value;
+  if(!dateVal) return;
+  const daysMY = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+  const dateObj = new Date(dateVal);
+  const dayName = daysMY[dateObj.getDay()];
+  document.getElementById('form-hari').value = dayName;
+  if(!document.getElementById('form-id').value) {
+    document.getElementById('form-bil-display').innerText = generateBilNumber(dateVal);
+  }
+}
 
-                // Lokasi Solat Selection
-                const predefinedLokasi = ['Masjid Al - Idrisi Mukim Bgl Setol','Masjid Pondok','Masjid Hj Yaakob Lumpur','Madrasah Pak Jak','Madrasah Gebeng','Masjid lbk Kawah dalam','Masjid lbk Kawah luar (hijau)'];
-                if(predefinedLokasi.includes(editRecord.lokasiSolat)) {
-                    document.getElementById('form-lokasi-solat-select').value = editRecord.lokasiSolat;
-                } else if(editRecord.lokasiSolat) {
-                    document.getElementById('form-lokasi-solat-select').value = 'Lain-lain';
-                    document.getElementById('form-lokasi-solat-manual').classList.remove('hidden');
-                    document.getElementById('form-lokasi-solat-manual').value = editRecord.lokasiSolat;
-                }
+function toggleManualInput(type) {
+  if(type === 'kampung') {
+    const sel = document.getElementById('form-kampung').value;
+    const input = document.getElementById('form-kampung-manual');
+    if(sel === 'Lain-lain') input.classList.remove('hidden');
+    else input.classList.add('hidden');
+  } else if(type === 'lokasi') {
+    const sel = document.getElementById('form-lokasi-solat-select').value;
+    const input = document.getElementById('form-lokasi-solat-manual');
+    if(sel === 'Lain-lain') input.classList.remove('hidden');
+    else input.classList.add('hidden');
+  } else if(type === 'tempat') {
+    const sel = document.getElementById('form-tempat').value;
+    const input = document.getElementById('form-tempat-manual');
+    if(sel === 'Lain-lain') input.classList.remove('hidden');
+    else input.classList.add('hidden');
+  }
+}
 
-                // Tempat Perkuburan Selection
-                if(['Tanah Perkuburan Islam Pondok','Tanah Perkuburan Islam Lbk Kawah Dalam','Tanah Perkuburan Islam Siram'].includes(editRecord.tempat)) {
-                    document.getElementById('form-tempat').value = editRecord.tempat;
-                } else {
-                    document.getElementById('form-tempat').value = 'Lain-lain';
-                    document.getElementById('form-tempat-manual').classList.remove('hidden');
-                    document.getElementById('form-tempat-manual').value = editRecord.tempat;
-                }
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const id = document.getElementById('form-id').value;
+  const nama = document.getElementById('form-nama').value.trim();
+  const tarikh = document.getElementById('form-tarikh').value;
+  const hari = document.getElementById('form-hari').value;
+  const rawMasaKematian = document.getElementById('form-masa-kematian').value;
+  const rawMasaSolat = document.getElementById('form-masa-solat').value;
 
-                document.getElementById('form-bil-display').innerText = editRecord.bilKematian;
-            } else {
-                document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-plus mr-2"></i>Tambah Rekod Kematian`;
-                document.getElementById('form-id').value = '';
-                const todayStr = new Date().toISOString().split('T')[0];
-                document.getElementById('form-tarikh').value = todayStr;
-                calculateDayFromDate();
-                
-                const nextBil = generateNextBilNumber(todayStr);
-                document.getElementById('form-bil-display').innerText = nextBil;
-            }
+  let lokasiSolat = document.getElementById('form-lokasi-solat-select').value;
+  if(lokasiSolat === 'Lain-lain') {
+    lokasiSolat = document.getElementById('form-lokasi-solat-manual').value.trim() || 'Lain-lain';
+  } else if(!lokasiSolat) {
+    lokasiSolat = 'Masjid Al - Idrisi Mukim Bgl Setol';
+  }
 
-            modal.classList.remove('hidden');
-        }
+  const masaKematian = formatTime12H(rawMasaKematian);
+  const masaSolat = formatTime12H(rawMasaSolat);
 
-        function closeFormModal() {
-            document.getElementById('form-modal').classList.add('hidden');
-        }
+  let kampung = document.getElementById('form-kampung').value;
+  if(kampung === 'Lain-lain') {
+    kampung = document.getElementById('form-kampung-manual').value.trim() || 'Lain-lain';
+  }
 
-        function calculateDayFromDate() {
-            const dateVal = document.getElementById('form-tarikh').value;
-            if(!dateVal) return;
-            const daysMY = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
-            const dateObj = new Date(dateVal);
-            const dayName = daysMY[dateObj.getDay()];
-            document.getElementById('form-hari').value = dayName;
+  let tempat = document.getElementById('form-tempat').value;
+  if(tempat === 'Lain-lain') {
+    tempat = document.getElementById('form-tempat-manual').value.trim() || 'Lain-lain';
+  }
 
-            if(!document.getElementById('form-id').value) {
-                document.getElementById('form-bil-display').innerText = generateNextBilNumber(dateVal);
-            }
-        }
+  if(id) {
+    const index = records.findIndex(r => r.id === id);
+    if(index !== -1) {
+      records[index] = {
+        ...records[index],
+        nama, kampung, tarikh, hari,
+        rawMasaKematian, rawMasaSolat,
+        masaKematian, masaSolat, lokasiSolat, tempat
+      };
+      saveRecordsToStorage();
+      showToast('Rekod berjaya dikemaskini!');
+    }
+  } else {
+    const bilKematian = generateBilNumber(tarikh);
+    const newRecord = {
+      id: Date.now().toString(),
+      nama,
+      bilKematian,
+      kampung,
+      tarikh,
+      hari,
+      rawMasaKematian,
+      rawMasaSolat,
+      masaKematian,
+      masaSolat,
+      lokasiSolat,
+      tempat,
+      timestamp: new Date().getTime()
+    };
+    records.unshift(newRecord);
+    saveRecordsToStorage();
+    showToast('Rekod kematian baharu berjaya disimpan!');
+  }
+  closeFormModal();
+  renderAllViews();
+}
 
-        function toggleManualInput(type) {
-            if(type === 'kampung') {
-                const sel = document.getElementById('form-kampung').value;
-                const input = document.getElementById('form-kampung-manual');
-                if(sel === 'Lain-lain') input.classList.remove('hidden');
-                else input.classList.add('hidden');
-            } else if(type === 'lokasi') {
-                const sel = document.getElementById('form-lokasi-solat-select').value;
-                const input = document.getElementById('form-lokasi-solat-manual');
-                if(sel === 'Lain-lain') input.classList.remove('hidden');
-                else input.classList.add('hidden');
-            } else if(type === 'tempat') {
-                const sel = document.getElementById('form-tempat').value;
-                const input = document.getElementById('form-tempat-manual');
-                if(sel === 'Lain-lain') input.classList.remove('hidden');
-                else input.classList.add('hidden');
-            }
-        }
+function renderAllViews() {
+  renderGeneralTable();
+  renderLatestTable();
+  renderPrintTable();
+  updateStats();
+  updateChart();
+}
 
-        function generateNextBilNumber(dateString) {
-            const inputYear = dateString ? new Date(dateString).getFullYear() : new Date().getFullYear();
+function updateStats() {
+  const total = records.length;
+  const currentYear = new Date().getFullYear();
+  const yearRecords = records.filter(r => new Date(r.tarikh).getFullYear() === currentYear).length;
 
-            if (records.length === 0) {
-                return `1 (1/${inputYear})`;
-            }
+  document.getElementById('stat-total').innerText = total;
+  document.getElementById('stat-year-label').innerText = currentYear;
+  document.getElementById('stat-year').innerText = yearRecords;
 
-            // Cari nombor bil dari rekod terkini (rekod pertama)
-            const latestRecord = records[0];
-            let lastGeneral = 0;
-            let lastYearNum = 0;
+  const kampungCounts = {};
+  records.forEach(r => {
+    if(r.kampung) {
+      kampungCounts[r.kampung] = (kampungCounts[r.kampung] || 0) + 1;
+    }
+  });
 
-            if (latestRecord && latestRecord.bilKematian) {
-                // Format jangkaan: "643 (30/2026)"
-                const match = latestRecord.bilKematian.match(/(\d+)\s*\(\s*(\d+)\/(\d+)\s*\)/);
-                if (match) {
-                    lastGeneral = parseInt(match[1], 10);
-                    lastYearNum = parseInt(match[2], 10);
-                }
-            }
+  let topKampung = '-';
+  let maxCount = 0;
+  for(const [kp, count] of Object.entries(kampungCounts)) {
+    if(count > maxCount) {
+      maxCount = count;
+      topKampung = kp;
+    }
+  }
+  document.getElementById('stat-top-kampung').innerText = topKampung !== '-' ? `${topKampung} (${maxCount})` : '-';
+}
 
-            const nextGeneral = lastGeneral > 0 ? lastGeneral + 1 : records.length + 1;
-            const nextYearNum = lastYearNum > 0 ? lastYearNum + 1 : 1;
+function renderGeneralTable(filteredData = null) {
+  const tbody = document.getElementById('general-table-body');
+  const dataToRender = filteredData || records;
+  document.getElementById('record-count-badge').innerText = `${dataToRender.length} Rekod`;
 
-            return `${nextGeneral} (${nextYearNum}/${inputYear})`;
-        }
+  if(dataToRender.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">Tiada rekod kematian ditemui.</td></tr>`;
+    return;
+  }
 
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const id = document.getElementById('form-id').value;
-            const nama = document.getElementById('form-nama').value.trim();
-            const tarikh = document.getElementById('form-tarikh').value;
-            const hari = document.getElementById('form-hari').value;
-            const rawMasaKematian = document.getElementById('form-masa-kematian').value;
-            const rawMasaSolat = document.getElementById('form-masa-solat').value;
+  tbody.innerHTML = dataToRender.map((r, i) => `
+    <tr class="hover:bg-blue-50/50 transition border-b border-gray-100">
+      <td class="p-3 font-bold text-gray-800">${i + 1}</td>
+      <td class="p-3 font-bold text-gray-900">${r.nama}</td>
+      <td class="p-3 font-semibold text-brand">${r.bilKematian}</td>
+      <td class="p-3">${r.kampung}</td>
+      <td class="p-3">${formatDateMY(r.tarikh)}</td>
+      <td class="p-3">${r.hari}</td>
+      <td class="p-3 font-medium">${formatTime12H(r.masaKematian)}</td>
+      <td class="p-3 font-medium">${formatTime12H(r.masaSolat)}</td>
+      <td class="p-3">${r.tempat}</td>
+    </tr>
+  `).join('');
+}
 
-            // Lokasi Solat
-            let lokasiSolat = document.getElementById('form-lokasi-solat-select').value;
-            if(lokasiSolat === 'Lain-lain') {
-                lokasiSolat = document.getElementById('form-lokasi-solat-manual').value.trim() || 'Lain-lain';
-            } else if(!lokasiSolat) {
-                lokasiSolat = 'Masjid Al - Idrisi Mukim Bgl Setol';
-            }
+// PAPARAN KOTAK TERKINI SENTIASA MENGAMBIL REKOD LATEST WALAUPUN DATA DIIMPORT MENGIKUT URUTAN MASA
+function renderLatestTable() {
+  const tbody = document.getElementById('latest-record-body');
+  const latest = getLatestRecord();
 
-            const masaKematian = formatTime12H(rawMasaKematian);
-            const masaSolat = formatTime12H(rawMasaSolat);
+  if(!latest) {
+    tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">Tiada rekod kematian terkini.</td></tr>`;
+    return;
+  }
 
-            let kampung = document.getElementById('form-kampung').value;
-            if(kampung === 'Lain-lain') {
-                kampung = document.getElementById('form-kampung-manual').value.trim() || 'Lain-lain';
-            }
+  tbody.innerHTML = `
+    <tr class="bg-blue-50/60 font-medium">
+      <td class="p-2.5 font-bold text-brand">${latest.bilKematian}</td>
+      <td class="p-2.5 font-bold text-gray-900">${latest.nama}</td>
+      <td class="p-2.5">${latest.kampung}</td>
+      <td class="p-2.5">${formatDateMY(latest.tarikh)} (${latest.hari})</td>
+      <td class="p-2.5 font-semibold">${formatTime12H(latest.masaKematian)}</td>
+      <td class="p-2.5 font-semibold">${formatTime12H(latest.masaSolat)}</td>
+      <td class="p-2.5">${latest.tempat}</td>
+    </tr>
+  `;
+}
 
-            let tempat = document.getElementById('form-tempat').value;
-            if(tempat === 'Lain-lain') {
-                tempat = document.getElementById('form-tempat-manual').value.trim() || 'Lain-lain';
-            }
+function renderPrintTable() {
+  const tbody = document.getElementById('print-table-body');
+  if(records.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Tiada rekod.</td></tr>`;
+    return;
+  }
 
-            if(id) {
-                const index = records.findIndex(r => r.id === id);
-                if(index !== -1) {
-                    records[index] = {
-                        ...records[index],
-                        nama, kampung, tarikh, hari,
-                        rawMasaKematian, rawMasaSolat,
-                        masaKematian, masaSolat, lokasiSolat, tempat
-                    };
-                    saveRecordsToStorage();
-                    showToast('Rekod berjaya dikemaskini!');
-                }
-            } else {
-                const bilKematian = generateNextBilNumber(tarikh);
-                const newRecord = {
-                    id: Date.now().toString(),
-                    nama,
-                    bilKematian,
-                    kampung,
-                    tarikh,
-                    hari,
-                    rawMasaKematian,
-                    rawMasaSolat,
-                    masaKematian,
-                    masaSolat,
-                    lokasiSolat,
-                    tempat,
-                    timestamp: new Date().getTime()
-                };
-                records.unshift(newRecord);
-                saveRecordsToStorage();
-                showToast('Rekod kematian baharu berjaya disimpan!');
-            }
+  tbody.innerHTML = records.map((r, i) => `
+    <tr>
+      <td class="p-2 border border-gray-300 text-center">${i + 1}</td>
+      <td class="p-2 border border-gray-300 font-bold">${r.nama}</td>
+      <td class="p-2 border border-gray-300 font-bold">${r.bilKematian}</td>
+      <td class="p-2 border border-gray-300">${r.kampung}</td>
+      <td class="p-2 border border-gray-300">${formatDateMY(r.tarikh)}</td>
+      <td class="p-2 border border-gray-300">${r.hari}</td>
+      <td class="p-2 border border-gray-300">${formatTime12H(r.masaKematian)}</td>
+      <td class="p-2 border border-gray-300">${formatTime12H(r.masaSolat)}</td>
+      <td class="p-2 border border-gray-300">${r.tempat}</td>
+    </tr>
+  `).join('');
+}
 
-            closeFormModal();
-            renderAllViews();
-        }
+function filterRecords() {
+  const q = document.getElementById('smart-search-input').value.toLowerCase();
+  const filtered = records.filter(r => 
+    (r.nama && r.nama.toLowerCase().includes(q)) ||
+    (r.bilKematian && r.bilKematian.toLowerCase().includes(q)) ||
+    (r.kampung && r.kampung.toLowerCase().includes(q)) ||
+    (r.tarikh && r.tarikh.toLowerCase().includes(q)) ||
+    (r.tempat && r.tempat.toLowerCase().includes(q))
+  );
+  renderGeneralTable(filtered);
+}
 
-        function renderAllViews() {
-            renderGeneralTable();
-            renderLatestTable();
-            renderPrintTable();
-            updateStats();
-            updateChart();
-        }
+function initChart() {
+  const ctx = document.getElementById('chartKampung').getContext('2d');
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Jumlah Kematian',
+        data: [],
+        backgroundColor: '#0b132b',
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+      }
+    }
+  });
+}
 
-        function updateStats() {
-            const total = records.length;
-            const currentYear = new Date().getFullYear();
-            const yearRecords = records.filter(r => new Date(r.tarikh).getFullYear() === currentYear).length;
+function updateChart() {
+  if(!chartInstance) return;
+  const counts = {};
+  records.forEach(r => {
+    if(r.kampung) {
+      counts[r.kampung] = (counts[r.kampung] || 0) + 1;
+    }
+  });
+  chartInstance.data.labels = Object.keys(counts);
+  chartInstance.data.datasets[0].data = Object.values(counts);
+  chartInstance.update();
+}
 
-            document.getElementById('stat-total').innerText = total;
-            document.getElementById('stat-year-label').innerText = currentYear;
-            document.getElementById('stat-year').innerText = yearRecords;
+// FUNGSI HANTAR WHATSAPP MENGGUNAKAN REKOD TERKINI YANG DIJAMIN TEPAT
+function sendWhatsApp(role) {
+  const latest = getLatestRecord();
+  if(!latest) {
+    showToast('Tiada data kematian untuk dihantar.');
+    return;
+  }
+  const phone = role === 'pengerusi' ? settings.waPengerusi : settings.waSU;
+  if(!phone) {
+    showToast('Sila tetapkan No WhatsApp di bahagian Tetapan dahulu.');
+    return;
+  }
 
-            const kampungCounts = {};
-            records.forEach(r => {
-                if(r.kampung) {
-                    kampungCounts[r.kampung] = (kampungCounts[r.kampung] || 0) + 1;
-                }
-            });
+  const masaKematianFmt = formatTime12H(latest.masaKematian);
+  const masaSolatFmt = formatTime12H(latest.masaSolat);
+  const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
 
-            let topKampung = '-';
-            let maxCount = 0;
-            for(const [kp, count] of Object.entries(kampungCounts)) {
-                if(count > maxCount) {
-                    maxCount = count;
-                    topKampung = kp;
-                }
-            }
-            document.getElementById('stat-top-kampung').innerText = topKampung !== '-' ? `${topKampung} (${maxCount})` : '-';
-        }
-
-        function renderGeneralTable(filteredData = null) {
-            const tbody = document.getElementById('general-table-body');
-            const dataToRender = filteredData || records;
-
-            document.getElementById('record-count-badge').innerText = `${dataToRender.length} Rekod`;
-
-            if(dataToRender.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">Tiada rekod kematian ditemui.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = dataToRender.map((r, i) => `
-                <tr class="hover:bg-blue-50/50 transition border-b border-gray-100">
-                    <td class="p-3 font-bold text-gray-800">${i + 1}</td>
-                    <td class="p-3 font-bold text-gray-900">${r.nama}</td>
-                    <td class="p-3 font-semibold text-brand">${r.bilKematian}</td>
-                    <td class="p-3">${r.kampung}</td>
-                    <td class="p-3">${formatDateMY(r.tarikh)}</td>
-                    <td class="p-3">${r.hari}</td>
-                    <td class="p-3 font-medium">${formatTime12H(r.masaKematian)}</td>
-                    <td class="p-3 font-medium">${formatTime12H(r.masaSolat)}</td>
-                    <td class="p-3">${r.tempat}</td>
-                </tr>
-            `).join('');
-        }
-
-        function renderLatestTable() {
-            const tbody = document.getElementById('latest-record-body');
-            if(records.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">Tiada rekod kematian terkini.</td></tr>`;
-                return;
-            }
-
-            const latest = records[0];
-            tbody.innerHTML = `
-                <tr class="bg-blue-50/60 font-medium">
-                    <td class="p-2.5 font-bold text-brand">${latest.bilKematian}</td>
-                    <td class="p-2.5 font-bold text-gray-900">${latest.nama}</td>
-                    <td class="p-2.5">${latest.kampung}</td>
-                    <td class="p-2.5">${formatDateMY(latest.tarikh)} (${latest.hari})</td>
-                    <td class="p-2.5 font-semibold">${formatTime12H(latest.masaKematian)}</td>
-                    <td class="p-2.5 font-semibold">${formatTime12H(latest.masaSolat)}</td>
-                    <td class="p-2.5">${latest.tempat}</td>
-                </tr>
-            `;
-        }
-
-        function renderPrintTable() {
-            const tbody = document.getElementById('print-table-body');
-            if(records.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Tiada rekod.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = records.map((r, i) => `
-                <tr>
-                    <td class="p-2 border border-gray-300 text-center">${i + 1}</td>
-                    <td class="p-2 border border-gray-300 font-bold">${r.nama}</td>
-                    <td class="p-2 border border-gray-300 font-bold">${r.bilKematian}</td>
-                    <td class="p-2 border border-gray-300">${r.kampung}</td>
-                    <td class="p-2 border border-gray-300">${formatDateMY(r.tarikh)}</td>
-                    <td class="p-2 border border-gray-300">${r.hari}</td>
-                    <td class="p-2 border border-gray-300">${formatTime12H(r.masaKematian)}</td>
-                    <td class="p-2 border border-gray-300">${formatTime12H(r.masaSolat)}</td>
-                    <td class="p-2 border border-gray-300">${r.tempat}</td>
-                </tr>
-            `).join('');
-        }
-
-        function filterRecords() {
-            const q = document.getElementById('smart-search-input').value.toLowerCase();
-            const filtered = records.filter(r => 
-                (r.nama && r.nama.toLowerCase().includes(q)) ||
-                (r.bilKematian && r.bilKematian.toLowerCase().includes(q)) ||
-                (r.kampung && r.kampung.toLowerCase().includes(q)) ||
-                (r.tarikh && r.tarikh.toLowerCase().includes(q)) ||
-                (r.tempat && r.tempat.toLowerCase().includes(q))
-            );
-            renderGeneralTable(filtered);
-        }
-
-        function initChart() {
-            const ctx = document.getElementById('chartKampung').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Jumlah Kematian',
-                        data: [],
-                        backgroundColor: '#0b132b',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
-                    }
-                }
-            });
-        }
-
-        function updateChart() {
-            if(!chartInstance) return;
-            const counts = {};
-            records.forEach(r => {
-                if(r.kampung) {
-                    counts[r.kampung] = (counts[r.kampung] || 0) + 1;
-                }
-            });
-
-            chartInstance.data.labels = Object.keys(counts);
-            chartInstance.data.datasets[0].data = Object.values(counts);
-            chartInstance.update();
-        }
-
-        function sendWhatsApp(role) {
-            if(records.length === 0) {
-                showToast('Tiada data kematian untuk dihantar.');
-                return;
-            }
-
-            const phone = role === 'pengerusi' ? settings.waPengerusi : settings.waSU;
-            if(!phone) {
-                showToast('Sila tetapkan No WhatsApp di bahagian Tetapan dahulu.');
-                return;
-            }
-
-            const latest = records[0];
-            const masaKematianFmt = formatTime12H(latest.masaKematian);
-            const masaSolatFmt = formatTime12H(latest.masaSolat);
-            const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
-
-            const text = 
+  const text = 
 `السلام عليكم ورحمة الله وبركاته
-
 *MAKLUMAN KEMATIAN*
 إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
 
@@ -1126,163 +1024,160 @@ AJK Tabung Khairat Kematian
 Masjid Al - Idrisi Mukim Banggol Setol,
 Pasir Mas, Kelantan`;
 
-            const encoded = encodeURIComponent(text);
-            window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
-        }
+  const encoded = encodeURIComponent(text);
+  window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+}
 
-        function triggerEditByBil() {
-            const inputEl = document.getElementById('input-edit-bil');
-            const bilInput = inputEl.value.trim();
-            if(!bilInput) {
-                showToast('Sila masukkan No Bil Kematian.');
-                return;
-            }
+function triggerEditByBil() {
+  const inputEl = document.getElementById('input-edit-bil');
+  const bilInput = inputEl.value.trim();
+  if(!bilInput) {
+    showToast('Sila masukkan No Bil Kematian.');
+    return;
+  }
+  const record = records.find(r => r.bilKematian.toLowerCase().includes(bilInput.toLowerCase()));
+  if(record) {
+    openFormModal(record);
+  } else {
+    showToast('Rekod dengan No Bil tersebut tidak ditemui.');
+  }
+}
 
-            const record = records.find(r => r.bilKematian.toLowerCase().includes(bilInput.toLowerCase()));
-            if(record) {
-                openFormModal(record);
-            } else {
-                showToast('Rekod dengan No Bil tersebut tidak ditemui.');
-            }
-        }
+function triggerDeleteByBil() {
+  const inputEl = document.getElementById('input-delete-bil');
+  const bilInput = inputEl.value.trim();
+  if(!bilInput) {
+    showToast('Sila masukkan No Bil Kematian.');
+    return;
+  }
+  const record = records.find(r => r.bilKematian.toLowerCase().includes(bilInput.toLowerCase()));
+  if(record) {
+    recordToDeleteId = record.id;
+    document.getElementById('confirm-modal').classList.remove('hidden');
+  } else {
+    showToast('Rekod dengan No Bil tersebut tidak ditemui.');
+  }
+}
 
-        function triggerDeleteByBil() {
-            const inputEl = document.getElementById('input-delete-bil');
-            const bilInput = inputEl.value.trim();
-            if(!bilInput) {
-                showToast('Sila masukkan No Bil Kematian.');
-                return;
-            }
+function closeConfirmModal() {
+  recordToDeleteId = null;
+  document.getElementById('confirm-modal').classList.add('hidden');
+}
 
-            const record = records.find(r => r.bilKematian.toLowerCase().includes(bilInput.toLowerCase()));
-            if(record) {
-                recordToDeleteId = record.id;
-                document.getElementById('confirm-modal').classList.remove('hidden');
-            } else {
-                showToast('Rekod dengan No Bil tersebut tidak ditemui.');
-            }
-        }
+document.getElementById('confirm-delete-btn').onclick = function() {
+  if(recordToDeleteId) {
+    records = records.filter(r => r.id !== recordToDeleteId);
+    saveRecordsToStorage();
+    renderAllViews();
+    document.getElementById('input-delete-bil').value = '';
+    showToast('Rekod berjaya dihapuskan.');
+  }
+  closeConfirmModal();
+};
 
-        function closeConfirmModal() {
-            recordToDeleteId = null;
-            document.getElementById('confirm-modal').classList.add('hidden');
-        }
+function saveSettingInfo() {
+  settings.namaTabung = document.getElementById('setting-nama-tabung').value;
+  settings.subTabung = document.getElementById('setting-sub-tabung').value;
+  localStorage.setItem('khairat_settings', JSON.stringify(settings));
+  applySettingsDisplay();
+  showToast('Maklumat Tabung Khairat berjaya disimpan!');
+}
 
-        document.getElementById('confirm-delete-btn').onclick = function() {
-            if(recordToDeleteId) {
-                records = records.filter(r => r.id !== recordToDeleteId);
-                saveRecordsToStorage();
-                renderAllViews();
-                document.getElementById('input-delete-bil').value = '';
-                showToast('Rekod berjaya dihapuskan.');
-            }
-            closeConfirmModal();
-        };
+function saveWhatsAppNumbers() {
+  settings.waPengerusi = document.getElementById('setting-wa-pengerusi').value;
+  settings.waSU = document.getElementById('setting-wa-su').value;
+  localStorage.setItem('khairat_settings', JSON.stringify(settings));
+  showToast('Nombor WhatsApp berjaya dikemaskini!');
+}
 
-        function saveSettingInfo() {
-            settings.namaTabung = document.getElementById('setting-nama-tabung').value;
-            settings.subTabung = document.getElementById('setting-sub-tabung').value;
-            localStorage.setItem('khairat_settings', JSON.stringify(settings));
-            applySettingsDisplay();
-            showToast('Maklumat Tabung Khairat berjaya disimpan!');
-        }
+function loadLocalSettings() {
+  const saved = localStorage.getItem('khairat_settings');
+  if(saved) {
+    settings = JSON.parse(saved);
+  }
+  applySettingsDisplay();
+}
 
-        function saveWhatsAppNumbers() {
-            settings.waPengerusi = document.getElementById('setting-wa-pengerusi').value;
-            settings.waSU = document.getElementById('setting-wa-su').value;
-            localStorage.setItem('khairat_settings', JSON.stringify(settings));
-            showToast('Nombor WhatsApp berjaya dikemaskini!');
-        }
+function applySettingsDisplay() {
+  document.getElementById('setting-nama-tabung').value = settings.namaTabung;
+  document.getElementById('setting-sub-tabung').value = settings.subTabung;
+  document.getElementById('setting-wa-pengerusi').value = settings.waPengerusi || '';
+  document.getElementById('setting-wa-su').value = settings.waSU || '';
+}
 
-        function loadLocalSettings() {
-            const saved = localStorage.getItem('khairat_settings');
-            if(saved) {
-                settings = JSON.parse(saved);
-            }
-            applySettingsDisplay();
-        }
+function saveRecordsToStorage() {
+  localStorage.setItem('khairat_records', JSON.stringify(records));
+}
 
-        function applySettingsDisplay() {
-            document.getElementById('setting-nama-tabung').value = settings.namaTabung;
-            document.getElementById('setting-sub-tabung').value = settings.subTabung;
-            document.getElementById('setting-wa-pengerusi').value = settings.waPengerusi || '';
-            document.getElementById('setting-wa-su').value = settings.waSU || '';
-        }
+function loadLocalRecords() {
+  const saved = localStorage.getItem('khairat_records');
+  if(saved) {
+    records = JSON.parse(saved);
+  } else {
+    records = [{
+      id: "1001",
+      nama: "Zubaidah bt Daud",
+      bilKematian: "643 (30/2026)",
+      kampung: "Lubok Kawah Dalam",
+      tarikh: "2026-10-22",
+      hari: "Khamis",
+      rawMasaKematian: "05:00",
+      rawMasaSolat: "17:00",
+      masaKematian: "05:00 pg",
+      masaSolat: "05:00 ptg",
+      lokasiSolat: "Masjid Al - Idrisi Mukim Bgl Setol",
+      tempat: "Tanah Perkuburan Islam Pondok",
+      timestamp: Date.now()
+    }];
+  }
+}
 
-        function saveRecordsToStorage() {
-            localStorage.setItem('khairat_records', JSON.stringify(records));
-        }
+function exportJSON() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `Sandaran_Khairat_${new Date().toISOString().split('T')[0]}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  showToast('Eksport JSON berjaya.');
+}
 
-        function loadLocalRecords() {
-            const saved = localStorage.getItem('khairat_records');
-            if(saved) {
-                records = JSON.parse(saved);
-            } else {
-                records = [{
-                    id: "1001",
-                    nama: "Zubaidah bt Daud",
-                    bilKematian: "643 (30/2026)",
-                    kampung: "Lubok Kawah Dalam",
-                    tarikh: "2026-10-22",
-                    hari: "Khamis",
-                    rawMasaKematian: "05:00",
-                    rawMasaSolat: "17:00",
-                    masaKematian: "05:00 pg",
-                    masaSolat: "05:00 ptg",
-                    lokasiSolat: "Masjid Al - Idrisi Mukim Bgl Setol",
-                    tempat: "Tanah Perkuburan Islam Pondok",
-                    timestamp: Date.now()
-                }];
-            }
-        }
+function importJSON(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if(Array.isArray(imported)) {
+        records = imported;
+        saveRecordsToStorage();
+        renderAllViews();
+        showToast('Import data JSON berjaya!');
+      } else {
+        showToast('Format fail JSON tidak sah.');
+      }
+    } catch(err) {
+      showToast('Ralat ketika membaca fail JSON.');
+    }
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
 
-        function exportJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `Sandaran_Khairat_${new Date().toISOString().split('T')[0]}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('Eksport JSON berjaya.');
-        }
+function formatDateMY(dateStr) {
+  if(!dateStr) return '-';
+  const parts = dateStr.split('-');
+  if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return dateStr;
+}
 
-        function importJSON(event) {
-            const fileReader = new FileReader();
-            fileReader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if(Array.isArray(imported)) {
-                        records = imported;
-                        saveRecordsToStorage();
-                        renderAllViews();
-                        showToast('Import data JSON berjaya!');
-                    } else {
-                        showToast('Format fail JSON tidak sah.');
-                    }
-                } catch(err) {
-                    showToast('Ralat ketika membaca fail JSON.');
-                }
-            };
-            fileReader.readAsText(event.target.files[0]);
-        }
-
-        function formatDateMY(dateStr) {
-            if(!dateStr) return '-';
-            const parts = dateStr.split('-');
-            if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            return dateStr;
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerText = msg;
-            toast.classList.remove('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 3000);
-        }
-    </script>
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-message').innerText = msg;
+  toast.classList.remove('opacity-0', 'pointer-events-none');
+  setTimeout(() => {
+    toast.classList.add('opacity-0', 'pointer-events-none');
+  }, 3000);
+}
+</script>
 </body>
 </html>
-```
