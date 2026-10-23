@@ -207,7 +207,7 @@ body {
       </div>
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
         <h4 class="font-semibold text-gray-700 mb-4 text-sm"><i class="fa-solid fa-chart-bar mr-2 text-brand"></i>Taburan Kematian Mengikut Kampung</h4>
-        <div class="h-64 relative"><canvas id="chartKampung"></canvas></div>
+        <div class="h-80 relative overflow-x-auto"><canvas id="chartKampung"></canvas></div>
       </div>
     </section>
     <!-- ================= SENARAI KEMATIAN ================= -->
@@ -763,7 +763,6 @@ function handleFormSubmit(e) {
       timestamp: new Date().getTime()
     };
     
-    // MASUKKAN DI BAHAGIAN BAWAH DAN SUSUN MENAIK (ASCENDING)
     records.push(newRecord);
     records.sort((a, b) => {
       const matchA = (a.bilKematian || '').match(/^(\d+)/);
@@ -790,7 +789,6 @@ function updateStats() {
   const total = records.length;
   const currentYear = new Date().getFullYear();
   
-  // Dikemaskini agar pengiraan tahun mengambil kira tarikh atau format bilKematian
   const yearRecords = records.filter(r => {
     if (r.tarikh) {
       const recYear = new Date(r.tarikh).getFullYear();
@@ -896,6 +894,8 @@ function filterRecords() {
   );
   renderGeneralTable(filtered);
 }
+
+// INITIATE CHART - MEMAKSA SEMUA LABEL PAKSI-X DIPAPARKAN TANPA DIPOTONG/DILOMPATI
 function initChart() {
   const ctx = document.getElementById('chartKampung').getContext('2d');
   chartInstance = new Chart(ctx, {
@@ -914,23 +914,39 @@ function initChart() {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        x: {
+          ticks: {
+            autoSkip: false, // Memaksa paparan kesemua nama kampung
+            maxRotation: 45, // Mencondongkan label 45 darjah
+            minRotation: 45,
+            font: {
+              size: 10
+            }
+          }
+        },
+        y: { 
+          beginAtZero: true, 
+          ticks: { stepSize: 1 } 
+        }
       }
     }
   });
 }
+
 function updateChart() {
   if(!chartInstance) return;
   const counts = {};
   records.forEach(r => {
-    if(r.kampung) {
-      counts[r.kampung] = (counts[r.kampung] || 0) + 1;
+    if(r.kampung && r.kampung.trim() !== '' && r.kampung.trim() !== '-') {
+      const kp = r.kampung.trim();
+      counts[kp] = (counts[kp] || 0) + 1;
     }
   });
   chartInstance.data.labels = Object.keys(counts);
   chartInstance.data.datasets[0].data = Object.values(counts);
   chartInstance.update();
 }
+
 function sendWhatsApp(role) {
   const latest = getLatestRecord();
   if(!latest) {
