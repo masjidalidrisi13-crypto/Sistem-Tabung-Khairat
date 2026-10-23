@@ -90,7 +90,7 @@
             color: white;
             box-shadow: 0 4px 12px rgba(11, 19, 43, 0.3);
         }
-        /* Table Font Size set exactly to 10pt & Dark Navy Header */
+        /* Table Font Size set exactly to 8.5pt & Dark Navy Header */
         .table-umum {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 8.5pt;
@@ -100,11 +100,16 @@
             color: #ffffff !important;
             font-size: 8.5pt;
         }
-        /* Print styling for A4 */
+        
+        /* Optimized Print styling for A4 Landscape - Single Page Fix */
         @media print {
-            body {
-                background: white;
-                color: black;
+            html, body {
+                background: white !important;
+                color: black !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                height: auto !important;
+                overflow: visible !important;
             }
             .no-print {
                 display: none !important;
@@ -114,22 +119,43 @@
             }
             @page {
                 size: A4 landscape;
-                margin: 1cm;
+                margin: 0.8cm;
+            }
+            #page-cetak {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .print-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .print-header {
+                margin-bottom: 12px !important;
+                padding-bottom: 8px !important;
             }
             table {
                 width: 100% !important;
                 border-collapse: collapse !important;
-                font-size: 9pt !important;
+                font-size: 8.5pt !important;
+                page-break-inside: auto;
+            }
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
             }
             th, td {
-                border: 1px solid #000 !important;
-                padding: 6px !important;
+                border: 1px solid #333 !important;
+                padding: 4px 6px !important;
             }
             th {
                 background-color: #6b7280 !important;
                 color: white !important;
                 text-align: center !important;
                 -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>
@@ -332,11 +358,11 @@
                         </button>
                     </div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                    <div class="text-center mb-6 pb-4 border-b border-gray-300">
-                        <h2 id="print-header-title" class="text-xl font-bold text-gray-900 uppercase">MASJID AL - IDRISI MUKIM BANGGOL SETOL</h2>
-                        <p id="print-header-sub" class="text-sm text-gray-600">TABUNG KHAIRAT KEMATIAN</p>
-                        <p class="text-xs text-gray-400 mt-1">Dicetak pada: <span id="print-timestamp"></span></p>
+                <div class="print-container bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="print-header text-center mb-4 pb-3 border-b border-gray-300">
+                        <h2 id="print-header-title" class="text-xl font-bold text-gray-900 uppercase tracking-tight">MASJID AL - IDRISI MUKIM BANGGOL SETOL</h2>
+                        <p id="print-header-sub" class="text-sm font-semibold text-gray-600">TABUNG KHAIRAT KEMATIAN</p>
+                        <p class="text-xs text-gray-400 mt-0.5">Dicetak pada: <span id="print-timestamp"></span></p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse border border-gray-300">
