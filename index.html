@@ -789,16 +789,31 @@ function renderAllViews() {
 function updateStats() {
   const total = records.length;
   const currentYear = new Date().getFullYear();
-  const yearRecords = records.filter(r => new Date(r.tarikh).getFullYear() === currentYear).length;
+  
+  // Dikemaskini agar pengiraan tahun mengambil kira tarikh atau format bilKematian
+  const yearRecords = records.filter(r => {
+    if (r.tarikh) {
+      const recYear = new Date(r.tarikh).getFullYear();
+      if (recYear === currentYear) return true;
+    }
+    if (r.bilKematian && r.bilKematian.includes(`/${currentYear}`)) {
+      return true;
+    }
+    return false;
+  }).length;
+
   document.getElementById('stat-total').innerText = total;
   document.getElementById('stat-year-label').innerText = currentYear;
   document.getElementById('stat-year').innerText = yearRecords;
+
   const kampungCounts = {};
   records.forEach(r => {
-    if(r.kampung) {
-      kampungCounts[r.kampung] = (kampungCounts[r.kampung] || 0) + 1;
+    if(r.kampung && r.kampung.trim() !== '' && r.kampung.trim() !== '-') {
+      const kp = r.kampung.trim();
+      kampungCounts[kp] = (kampungCounts[kp] || 0) + 1;
     }
   });
+
   let topKampung = '-';
   let maxCount = 0;
   for(const [kp, count] of Object.entries(kampungCounts)) {
@@ -1085,7 +1100,6 @@ function importJSON(event) {
     try {
       const imported = JSON.parse(e.target.result);
       if(Array.isArray(imported)) {
-        // Susun data import secara menaik (ascending) mengikut nombor bil
         imported.sort((a, b) => {
           const matchA = (a.bilKematian || '').match(/^(\d+)/);
           const matchB = (b.bilKematian || '').match(/^(\d+)/);
