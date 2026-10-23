@@ -635,6 +635,7 @@
         let records = [];
         let chartInstance = null;
         let recordToDeleteId = null;
+        let currentActiveTab = 'utama';
         
         let BASE_GENERAL_NO = 643;
         let BASE_YEAR_NO = 30;
@@ -675,11 +676,31 @@
             initChart();
             renderAllViews();
             
-            // Pengurusan Sejarah Pelayar untuk Butang Back Telefon
-            history.replaceState({ tab: 'utama' }, "", "");
+            // Sedia kan Sejarah Pelayar (History Stack) secara Khas
+            history.replaceState({ page: 'exit' }, "", "");
+            history.pushState({ page: 'utama' }, "", "");
+
             window.addEventListener('popstate', function(event) {
-                const tab = event.state && event.state.tab ? event.state.tab : 'utama';
-                switchTab(tab, false);
+                // Jika sedang berada di modal borang/pengesahan, tutup modal dahulu
+                const formModal = document.getElementById('form-modal');
+                const confirmModal = document.getElementById('confirm-modal');
+                if(!formModal.classList.contains('hidden')) {
+                    closeFormModal();
+                    history.pushState({ page: currentActiveTab }, "", "");
+                    return;
+                }
+                if(!confirmModal.classList.contains('hidden')) {
+                    closeConfirmModal();
+                    history.pushState({ page: currentActiveTab }, "", "");
+                    return;
+                }
+
+                // Jika bukan di halaman Utama, kembalikan pengguna ke Utama dahulu
+                if (currentActiveTab !== 'utama') {
+                    switchTab('utama', false);
+                    history.pushState({ page: 'utama' }, "", "");
+                }
+                // Jika sudah berada di Utama, tekan back sekali lagi akan keluar dari aplikasi secara normal
             });
         };
 
@@ -691,7 +712,8 @@
             document.getElementById('print-timestamp').innerText = formatted;
         }
 
-        function switchTab(tabId, pushHistory = true) {
+        function switchTab(tabId, updateHistory = true) {
+            currentActiveTab = tabId;
             document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`page-${tabId}`).classList.remove('hidden');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -709,11 +731,8 @@
             if(tabId === 'utama') {
                 updateChart();
             }
-            if(pushHistory) {
-                const currentTab = document.querySelector('.page-content:not(.hidden)').id.replace('page-', '');
-                if(currentTab !== tabId) {
-                    history.pushState({ tab: tabId }, "", "");
-                }
+            if(updateHistory && tabId !== 'utama') {
+                history.pushState({ page: tabId }, "", "");
             }
         }
 
