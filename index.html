@@ -561,14 +561,15 @@ window.onload = function() {
   initChart();
   renderAllViews();
 
-  // Kawalan Sejarah (History) Pelayar Yang Kemas
-  history.replaceState({ page: 'utama' }, "", "");
+  // Menyediakan titik rujukan sejarah aplikasi
+  history.replaceState({ page: 'exit' }, "", "");
+  history.pushState({ page: 'utama' }, "", "");
 
   window.addEventListener('popstate', function(event) {
     const formModal = document.getElementById('form-modal');
     const confirmModal = document.getElementById('confirm-modal');
 
-    // 1. Jika ada modal yang terbuka, tutup modal sahaja dahulu
+    // 1. Jika ada modal yang terbuka, tutup modal sahaja
     if (!formModal.classList.contains('hidden')) {
       closeFormModal();
       history.pushState({ page: currentActiveTab }, "", "");
@@ -580,14 +581,15 @@ window.onload = function() {
       return;
     }
 
-    // 2. Jika bukan berada di tab 'utama', kembali ke tab 'utama'
+    // 2. Jika berada di tab lain, kembali ke tab 'utama' (Tekanan pertama dari tab lain)
     if (currentActiveTab !== 'utama') {
       switchTab('utama', false);
-      history.replaceState({ page: 'utama' }, "", "");
-    } else {
-      // 3. Jika sudah berada di tab 'utama', biarkan pelayar keluar terus dari aplikasi
-      history.back();
+      history.pushState({ page: 'utama' }, "", "");
+      return;
     }
+
+    // 3. Jika sudah berada di tab 'utama', apabila butang back ditekan sekali lagi, ia akan keluar sistem
+    history.back();
   });
 };
 
@@ -618,8 +620,8 @@ function switchTab(tabId, updateHistory = true) {
   if(tabId === 'utama') {
     updateChart();
   }
-  if(updateHistory) {
-    history.replaceState({ page: tabId }, "", "");
+  if(updateHistory && tabId !== 'utama') {
+    history.pushState({ page: tabId }, "", "");
   }
 }
 
