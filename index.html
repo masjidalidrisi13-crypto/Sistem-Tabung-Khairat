@@ -98,7 +98,7 @@
             font-size: 8.5pt;
         }
         
-        /* Optimized Print styling for A4 Landscape - Single Page Fix */
+        /* Optimized Print styling for A4 Landscape - Single Page Fit */
         @media print {
             html, body {
                 background: white !important;
@@ -116,7 +116,7 @@
             }
             @page {
                 size: A4 landscape;
-                margin: 0.8cm;
+                margin: 0.4cm 0.6cm;
             }
             #page-cetak {
                 display: block !important;
@@ -130,27 +130,35 @@
                 margin: 0 !important;
             }
             .print-header {
-                margin-bottom: 12px !important;
-                padding-bottom: 8px !important;
+                margin-bottom: 6px !important;
+                padding-bottom: 4px !important;
+            }
+            .print-header h2 {
+                font-size: 13pt !important;
+                margin: 0 !important;
+            }
+            .print-header p {
+                font-size: 9pt !important;
+                margin: 0 !important;
             }
             table {
                 width: 100% !important;
                 border-collapse: collapse !important;
-                font-size: 8.5pt !important;
-                page-break-inside: auto;
+                font-size: 7.5pt !important;
+                line-height: 1.1 !important;
             }
             tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
+                page-break-inside: avoid !important;
             }
             th, td {
                 border: 1px solid #333 !important;
-                padding: 4px 6px !important;
+                padding: 2px 4px !important;
             }
             th {
-                background-color: #6b7280 !important;
+                background-color: #374151 !important;
                 color: white !important;
                 text-align: center !important;
+                font-size: 8pt !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -885,7 +893,7 @@
                     tempat,
                     timestamp: new Date().getTime()
                 };
-                records.push(newRecord); // Ditambah di hujung tatasusunan supaya rekod baharu menjadi yang terkini
+                records.push(newRecord);
                 saveRecordsToStorage();
                 showToast('Rekod kematian baharu berjaya disimpan!');
             }
@@ -950,7 +958,6 @@
                 tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">Tiada rekod kematian terkini.</td></tr>`;
                 return;
             }
-            // Diambil menggunakan indeks terakhir (rekod terkini / Bil 28)
             const latest = records[records.length - 1];
             tbody.innerHTML = `
                 <tr class="bg-blue-50/60 font-medium">
@@ -1040,41 +1047,54 @@
                 showToast('Sila tetapkan No WhatsApp di bahagian Tetapan dahulu.');
                 return;
             }
-            // Diambil menggunakan indeks terakhir (rekod terkini / Bil 28) untuk WhatsApp
             const latest = records[records.length - 1];
             const masaKematianFmt = formatTime12H(latest.masaKematian);
             const masaSolatFmt = formatTime12H(latest.masaSolat);
             const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
+            
+            // Format Perenggan & Jarak 100% Sama Seperti Gambar 1
             const text = 
 `السلام عليكم ورحمة الله وبركاته
+
 *MAKLUMAN KEMATIAN*
+
 إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
+
 Dengan penuh rasa dukacita dimaklumkan bahawa :
-👤 *Nama :*
+
+🗣 *Nama :*
 ${latest.nama}
+
 📌 *No. Bil Kematian :*
 ${latest.bilKematian}
+
 🏠 *Alamat :*
 ${latest.kampung}
+
 *Telah kembali ke Rahmatullah iaitu :*
 *Tarikh :*
 ${formatDateMY(latest.tarikh)} (${latest.hari})
-*Masa:*
+*Masa :*
 ${masaKematianFmt}
+
 *MAKLUMAT PENGURUSAN JENAZAH :*
 *Solat Jenazah :*
 ${masaSolatFmt}
-*Lokasi:*
+
+*Lokasi :*
 ${lokasiSolat}
+
 *Pengebumian :*
 *Lokasi :*
 ${latest.tempat}
+
 Semoga rohnya dicucuri rahmat, diampunkan segala dosanya, dan ditempatkan bersama-sama orang yang beriman, Amin.
 Al-Fatihah... 🤲🤲
+
 Daripada :
 AJK Tabung Khairat Kematian
-Masjid Al - Idrisi Mukim Banggol Setol,
-Pasir Mas, Kelantan`;
+Masjid Al - Idrisi Mukim Banggol Setol, Pasir Mas, Kelantan`;
+
             const encoded = encodeURIComponent(text);
             window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
         }
