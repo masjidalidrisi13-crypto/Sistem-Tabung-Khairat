@@ -143,7 +143,6 @@ body {
 </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
-
 <!-- Header Desktop/Mobile -->
 <header class="p-3 md:p-6 pb-0 md:pb-0 no-print">
   <div class="max-w-7xl mx-auto">
@@ -160,7 +159,6 @@ body {
     </div>
   </div>
 </header>
-
 <!-- Navigation Bar For Mobile -->
 <nav class="md:hidden px-3 pt-3 no-print">
   <div class="bg-white rounded-2xl p-2 shadow-sm border border-gray-200 grid grid-cols-4 gap-1 text-center">
@@ -170,7 +168,6 @@ body {
     <button onclick="switchTab('tetapan')" id="mob-nav-tetapan" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600"><i class="fa-solid fa-gear text-base mb-1"></i> Tetapan</button>
   </div>
 </nav>
-
 <!-- Main Content Layout -->
 <div class="max-w-7xl w-full mx-auto flex-1 flex flex-col md:flex-row p-3 md:p-6 gap-6">
   <!-- Sidebar Navigation for Desktop -->
@@ -186,7 +183,6 @@ body {
       <button onclick="switchTab('tetapan')" id="dt-nav-tetapan" class="nav-item w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm"><i class="fa-solid fa-gear w-5"></i> Tetapan</button>
     </nav>
   </aside>
-
   <!-- Dynamic Main Views -->
   <main class="flex-1 space-y-6">
     <!-- ================= UTAMA : ANALISIS KEMATIAN ================= -->
@@ -195,7 +191,6 @@ body {
         <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-chart-line text-brand"></i> Analisa Rekod Kematian</h3>
         <button onclick="openFormModal()" class="btn-custom w-full sm:w-1/2 md:w-auto text-xs py-2 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Tambah Kematian</button>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-brand">
           <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Jumlah Keseluruhan Kematian</p>
@@ -210,20 +205,17 @@ body {
           <h3 id="stat-top-kampung" class="text-xl font-bold text-gray-800 mt-2 truncate">-</h3>
         </div>
       </div>
-
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
         <h4 class="font-semibold text-gray-700 mb-4 text-sm"><i class="fa-solid fa-chart-bar mr-2 text-brand"></i>Taburan Kematian Mengikut Kampung</h4>
         <div class="h-64 relative"><canvas id="chartKampung"></canvas></div>
       </div>
     </section>
-
     <!-- ================= SENARAI KEMATIAN ================= -->
     <section id="page-senarai" class="page-content space-y-6 hidden">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-book text-brand"></i> Senarai Rekod Kematian</h3>
         <button onclick="openFormModal()" class="btn-custom w-full sm:w-1/2 md:w-auto text-xs py-2 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Tambah Kematian</button>
       </div>
-
       <!-- WhatsApp Notification Buttons & Latest Record Card -->
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-3">
@@ -233,7 +225,6 @@ body {
             <button onclick="sendWhatsApp('su')" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 shadow-sm text-center leading-tight"><i class="fa-brands fa-whatsapp text-base"></i><span>WhatsApp<br>SU TKK</span></button>
           </div>
         </div>
-
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
@@ -253,7 +244,6 @@ body {
           </table>
         </div>
       </div>
-
       <!-- Smart Search Section -->
       <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
         <label class="block text-xs font-bold text-gray-700 mb-2"><i class="fa-solid fa-magnifying-glass text-brand mr-1"></i> Carian Pintar</label>
@@ -262,7 +252,6 @@ body {
           <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-gray-400"></i>
         </div>
       </div>
-
       <!-- Main Record Table -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="p-3 bg-brand text-white border-b flex justify-between items-center">
@@ -291,7 +280,6 @@ body {
         </div>
       </div>
     </section>
-
     <!-- ================= CETAK ================= -->
     <section id="page-cetak" class="page-content space-y-6 hidden">
       <div class="space-y-3 no-print">
@@ -331,11 +319,9 @@ body {
         </div>
       </div>
     </section>
-
     <!-- ================= TETAPAN ================= -->
     <section id="page-tetapan" class="page-content space-y-6 hidden">
       <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-sliders text-brand"></i> Tetapan Sistem Tabung Khairat</h3>
-
       <!-- 1. Maklumat Tabung Khairat -->
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-4">
         <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-hospital-user text-brand"></i> 1. Maklumat Tabung Khairat</h4>
@@ -351,7 +337,6 @@ body {
         </div>
         <button onclick="saveSettingInfo()" class="btn-custom text-xs"><i class="fa-solid fa-floppy-disk"></i> Simpan Maklumat Tabung</button>
       </div>
-
       <!-- 2. Pengurusan Rekod & WhatsApp -->
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-6">
         <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-list-check text-brand"></i> 2. Pengurusan Rekod & Tetapan WhatsApp</h4>
@@ -368,7 +353,6 @@ body {
           </div>
           <button onclick="saveWhatsAppNumbers()" class="bg-brand text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-brand-dark transition shadow flex items-center gap-2"><i class="fa-solid fa-phone"></i> Kemaskini No WhatsApp</button>
         </div>
-
         <div class="space-y-4 pt-2 border-t">
           <!-- Box Edit Manual -->
           <div class="bg-gray-50/80 p-4 rounded-2xl border border-gray-200 space-y-3">
@@ -378,7 +362,6 @@ body {
               <button onclick="triggerEditByBil()" class="w-full bg-brand text-white py-2.5 px-4 rounded-xl text-xs font-bold hover:bg-brand-dark transition shadow text-center">Cari & Edit</button>
             </div>
           </div>
-
           <!-- Box Hapus Manual -->
           <div class="bg-red-50/50 p-4 rounded-2xl border border-red-100 space-y-3">
             <label class="block text-xs font-bold text-red-800">Hapus Rekod Manual</label>
@@ -389,7 +372,6 @@ body {
           </div>
         </div>
       </div>
-
       <!-- 3. Sandaran JSON -->
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 space-y-4">
         <h4 class="font-bold text-gray-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-database text-brand"></i> 3. Sandaran Data JSON</h4>
@@ -399,14 +381,12 @@ body {
           <label class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 shadow"><i class="fa-solid fa-upload"></i> Import Data JSON<input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)"></label>
         </div>
       </div>
-
       <div class="pt-2 flex justify-center">
         <div class="inline-block bg-orange-50/80 border border-amber-300 text-amber-900 font-semibold px-6 py-2 rounded-2xl text-[9pt] shadow-sm">sistemtkk©asri2026</div>
       </div>
     </section>
   </main>
 </div>
-
 <!-- ================= MODAL BORANG TAMBAH / EDIT KEMATIAN ================= -->
 <div id="form-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
   <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -424,12 +404,10 @@ body {
         </div>
         <span class="text-[10px] text-gray-400">Dijana Secara Automatik</span>
       </div>
-
       <div>
         <label class="block font-bold text-gray-700 mb-1">Nama Arwah <span class="text-red-500">*</span></label>
         <input type="text" id="form-nama" required placeholder="Contoh: Zubaidah bt Daud" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label class="block font-bold text-gray-700 mb-1">Kampung / Alamat <span class="text-red-500">*</span></label>
@@ -458,7 +436,6 @@ body {
           <input type="date" id="form-tarikh" onchange="calculateDayFromDate()" required class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
         </div>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
           <label class="block font-bold text-gray-700 mb-1">Hari (Automatik)</label>
@@ -473,7 +450,6 @@ body {
           <input type="time" id="form-masa-solat" class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand">
         </div>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label class="block font-bold text-gray-700 mb-1">Lokasi Solat Jenazah</label>
@@ -502,7 +478,6 @@ body {
           <input type="text" id="form-tempat-manual" placeholder="Tulis nama tempat perkuburan..." class="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-brand mt-2 hidden">
         </div>
       </div>
-
       <div class="pt-4 border-t flex justify-end gap-2">
         <button type="button" onclick="closeFormModal()" class="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-200 rounded-xl hover:bg-gray-300">Batal</button>
         <button type="submit" class="btn-custom text-xs">Simpan Rekod</button>
@@ -510,7 +485,6 @@ body {
     </form>
   </div>
 </div>
-
 <!-- MODAL PENGESAHAN HAPUS DALAM SISTEM -->
 <div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
   <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
@@ -525,27 +499,23 @@ body {
     </div>
   </div>
 </div>
-
 <!-- Notification Toast Container -->
 <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white text-xs px-4 py-3 rounded-xl shadow-lg transition duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
   <i class="fa-solid fa-circle-info text-green-400"></i>
   <span id="toast-message">Mesej Notifikasi</span>
 </div>
-
 <!-- Main Logic Script -->
 <script>
 let records = [];
 let chartInstance = null;
 let recordToDeleteId = null;
 let currentActiveTab = 'utama';
-
 let settings = {
   namaTabung: "Masjid Al - Idrisi Mukim Banggol Setol",
   subTabung: "Tabung Khairat Kematian",
   waPengerusi: "60123456789",
   waSU: "60198765432"
 };
-
 function formatTime12H(time24) {
   if (!time24) return '-';
   if (/[a-zA-Z]/.test(time24)) return time24;
@@ -566,17 +536,14 @@ function formatTime12H(time24) {
   const formattedHours = hours12 < 10 ? '0' + hours12 : hours12;
   return `${formattedHours}:${minutes} ${suffix}`;
 }
-
 window.onload = function() {
   loadLocalSettings();
   updateCurrentDate();
   loadLocalRecords();
   initChart();
   renderAllViews();
-
   history.replaceState({ page: 'exit' }, "", "");
   history.pushState({ page: 'utama' }, "", "");
-
   window.addEventListener('popstate', function(event) {
     const formModal = document.getElementById('form-modal');
     const confirmModal = document.getElementById('confirm-modal');
@@ -596,7 +563,6 @@ window.onload = function() {
     }
   });
 };
-
 function updateCurrentDate() {
   const today = new Date();
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -604,7 +570,6 @@ function updateCurrentDate() {
   document.getElementById('current-date-display').innerText = formatted;
   document.getElementById('print-timestamp').innerText = formatted;
 }
-
 function switchTab(tabId, updateHistory = true) {
   currentActiveTab = tabId;
   document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
@@ -628,7 +593,6 @@ function switchTab(tabId, updateHistory = true) {
     history.pushState({ page: tabId }, "", "");
   }
 }
-
 function getLatestRecord() {
   if (records.length === 0) return null;
   return [...records].sort((a, b) => {
@@ -643,7 +607,6 @@ function getLatestRecord() {
     return new Date(b.tarikh) - new Date(a.tarikh);
   })[0];
 }
-
 function generateBilNumber(dateString) {
   if (records.length === 0) return `614 (1/${new Date(dateString).getFullYear()})`;
   
@@ -665,7 +628,6 @@ function generateBilNumber(dateString) {
   
   return `${nextGenNo} (${nextYearNo}/${currentYear})`;
 }
-
 function openFormModal(editRecord = null) {
   const modal = document.getElementById('form-modal');
   const form = document.getElementById('death-form');
@@ -673,12 +635,10 @@ function openFormModal(editRecord = null) {
   document.getElementById('form-kampung-manual').classList.add('hidden');
   document.getElementById('form-lokasi-solat-manual').classList.add('hidden');
   document.getElementById('form-tempat-manual').classList.add('hidden');
-
   if(editRecord) {
     document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square mr-2"></i>Kemaskini Rekod Kematian`;
     document.getElementById('form-id').value = editRecord.id;
     document.getElementById('form-nama').value = editRecord.nama;
-
     if(['Lubok Kawah Dalam','Surau','Pondok','Berek 12','Bgl Kuin','Alor Lenggak','Pak Jak','Machang Bubuk','Lumpur','Mengkirim','Lbk Kawah Luar','Lbk Kawah Hilir','Chenerai','Lubok Puyu'].includes(editRecord.kampung)) {
       document.getElementById('form-kampung').value = editRecord.kampung;
     } else {
@@ -690,7 +650,6 @@ function openFormModal(editRecord = null) {
     document.getElementById('form-hari').value = editRecord.hari;
     document.getElementById('form-masa-kematian').value = editRecord.rawMasaKematian || '';
     document.getElementById('form-masa-solat').value = editRecord.rawMasaSolat || '';
-
     const predefinedLokasi = ['Masjid Al - Idrisi Mukim Bgl Setol','Masjid Pondok','Masjid Hj Yaakob Lumpur','Madrasah Pak Jak','Madrasah Gebeng','Masjid lbk Kawah dalam','Masjid lbk Kawah luar (hijau)'];
     if(predefinedLokasi.includes(editRecord.lokasiSolat)) {
       document.getElementById('form-lokasi-solat-select').value = editRecord.lokasiSolat;
@@ -699,7 +658,6 @@ function openFormModal(editRecord = null) {
       document.getElementById('form-lokasi-solat-manual').classList.remove('hidden');
       document.getElementById('form-lokasi-solat-manual').value = editRecord.lokasiSolat;
     }
-
     if(['Tanah Perkuburan Islam Pondok','Tanah Perkuburan Islam Lbk Kawah Dalam','Tanah Perkuburan Islam Siram'].includes(editRecord.tempat)) {
       document.getElementById('form-tempat').value = editRecord.tempat;
     } else {
@@ -719,11 +677,9 @@ function openFormModal(editRecord = null) {
   }
   modal.classList.remove('hidden');
 }
-
 function closeFormModal() {
   document.getElementById('form-modal').classList.add('hidden');
 }
-
 function calculateDayFromDate() {
   const dateVal = document.getElementById('form-tarikh').value;
   if(!dateVal) return;
@@ -735,7 +691,6 @@ function calculateDayFromDate() {
     document.getElementById('form-bil-display').innerText = generateBilNumber(dateVal);
   }
 }
-
 function toggleManualInput(type) {
   if(type === 'kampung') {
     const sel = document.getElementById('form-kampung').value;
@@ -754,7 +709,6 @@ function toggleManualInput(type) {
     else input.classList.add('hidden');
   }
 }
-
 function handleFormSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('form-id').value;
@@ -763,27 +717,22 @@ function handleFormSubmit(e) {
   const hari = document.getElementById('form-hari').value;
   const rawMasaKematian = document.getElementById('form-masa-kematian').value;
   const rawMasaSolat = document.getElementById('form-masa-solat').value;
-
   let lokasiSolat = document.getElementById('form-lokasi-solat-select').value;
   if(lokasiSolat === 'Lain-lain') {
     lokasiSolat = document.getElementById('form-lokasi-solat-manual').value.trim() || 'Lain-lain';
   } else if(!lokasiSolat) {
     lokasiSolat = 'Masjid Al - Idrisi Mukim Bgl Setol';
   }
-
   const masaKematian = formatTime12H(rawMasaKematian);
   const masaSolat = formatTime12H(rawMasaSolat);
-
   let kampung = document.getElementById('form-kampung').value;
   if(kampung === 'Lain-lain') {
     kampung = document.getElementById('form-kampung-manual').value.trim() || 'Lain-lain';
   }
-
   let tempat = document.getElementById('form-tempat').value;
   if(tempat === 'Lain-lain') {
     tempat = document.getElementById('form-tempat-manual').value.trim() || 'Lain-lain';
   }
-
   if(id) {
     const index = records.findIndex(r => r.id === id);
     if(index !== -1) {
@@ -824,14 +773,12 @@ function handleFormSubmit(e) {
       if (numA !== numB) return numA - numB;
       return new Date(a.tarikh) - new Date(b.tarikh);
     });
-
     saveRecordsToStorage();
     showToast('Rekod kematian baharu berjaya disimpan!');
   }
   closeFormModal();
   renderAllViews();
 }
-
 function renderAllViews() {
   renderGeneralTable();
   renderLatestTable();
@@ -839,23 +786,19 @@ function renderAllViews() {
   updateStats();
   updateChart();
 }
-
 function updateStats() {
   const total = records.length;
   const currentYear = new Date().getFullYear();
   const yearRecords = records.filter(r => new Date(r.tarikh).getFullYear() === currentYear).length;
-
   document.getElementById('stat-total').innerText = total;
   document.getElementById('stat-year-label').innerText = currentYear;
   document.getElementById('stat-year').innerText = yearRecords;
-
   const kampungCounts = {};
   records.forEach(r => {
     if(r.kampung) {
       kampungCounts[r.kampung] = (kampungCounts[r.kampung] || 0) + 1;
     }
   });
-
   let topKampung = '-';
   let maxCount = 0;
   for(const [kp, count] of Object.entries(kampungCounts)) {
@@ -866,17 +809,14 @@ function updateStats() {
   }
   document.getElementById('stat-top-kampung').innerText = topKampung !== '-' ? `${topKampung} (${maxCount})` : '-';
 }
-
 function renderGeneralTable(filteredData = null) {
   const tbody = document.getElementById('general-table-body');
   const dataToRender = filteredData || records;
   document.getElementById('record-count-badge').innerText = `${dataToRender.length} Rekod`;
-
   if(dataToRender.length === 0) {
     tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">Tiada rekod kematian ditemui.</td></tr>`;
     return;
   }
-
   tbody.innerHTML = dataToRender.map((r, i) => `
     <tr class="hover:bg-blue-50/50 transition border-b border-gray-100">
       <td class="p-3 font-bold text-gray-800">${i + 1}</td>
@@ -891,16 +831,13 @@ function renderGeneralTable(filteredData = null) {
     </tr>
   `).join('');
 }
-
 function renderLatestTable() {
   const tbody = document.getElementById('latest-record-body');
   const latest = getLatestRecord();
-
   if(!latest) {
     tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">Tiada rekod kematian terkini.</td></tr>`;
     return;
   }
-
   tbody.innerHTML = `
     <tr class="bg-blue-50/60 font-medium">
       <td class="p-2.5 font-bold text-brand">${latest.bilKematian}</td>
@@ -913,14 +850,12 @@ function renderLatestTable() {
     </tr>
   `;
 }
-
 function renderPrintTable() {
   const tbody = document.getElementById('print-table-body');
   if(records.length === 0) {
     tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Tiada rekod.</td></tr>`;
     return;
   }
-
   tbody.innerHTML = records.map((r, i) => `
     <tr>
       <td class="p-2 border border-gray-300 text-center">${i + 1}</td>
@@ -935,7 +870,6 @@ function renderPrintTable() {
     </tr>
   `).join('');
 }
-
 function filterRecords() {
   const q = document.getElementById('smart-search-input').value.toLowerCase();
   const filtered = records.filter(r => 
@@ -947,7 +881,6 @@ function filterRecords() {
   );
   renderGeneralTable(filtered);
 }
-
 function initChart() {
   const ctx = document.getElementById('chartKampung').getContext('2d');
   chartInstance = new Chart(ctx, {
@@ -971,7 +904,6 @@ function initChart() {
     }
   });
 }
-
 function updateChart() {
   if(!chartInstance) return;
   const counts = {};
@@ -984,7 +916,6 @@ function updateChart() {
   chartInstance.data.datasets[0].data = Object.values(counts);
   chartInstance.update();
 }
-
 function sendWhatsApp(role) {
   const latest = getLatestRecord();
   if(!latest) {
@@ -996,46 +927,55 @@ function sendWhatsApp(role) {
     showToast('Sila tetapkan No WhatsApp di bahagian Tetapan dahulu.');
     return;
   }
-
   const masaKematianFmt = formatTime12H(latest.masaKematian);
   const masaSolatFmt = formatTime12H(latest.masaSolat);
   const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
-
+  
   const text = 
 `السلام عليكم ورحمة الله وبركاته
+
 *MAKLUMAN KEMATIAN*
+
 إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
 
 Dengan penuh rasa dukacita dimaklumkan bahawa :
 
-👤 *Nama :* ${latest.nama}
-📌 *No. Bil Kematian :* ${latest.bilKematian}
-🏠 *Alamat :* ${latest.kampung}
+👤 *Nama :*
+${latest.nama}
+
+📌 *No. Bil Kematian :*
+${latest.bilKematian}
+
+🏠 *Alamat :*
+${latest.kampung}
 
 *Telah kembali ke Rahmatullah iaitu :*
-*Tarikh :* ${formatDateMY(latest.tarikh)} (${latest.hari})
-*Masa:* ${masaKematianFmt}
+*Tarikh :*
+${formatDateMY(latest.tarikh)} (${latest.hari})
+*Masa :*
+${masaKematianFmt}
 
 *MAKLUMAT PENGURUSAN JENAZAH :*
-*Solat Jenazah :* ${masaSolatFmt}
-*Lokasi:* ${lokasiSolat}
+*Solat Jenazah :*
+${masaSolatFmt}
+
+*Lokasi :*
+${lokasiSolat}
 
 *Pengebumian :*
-*Lokasi :* ${latest.tempat}
+*Lokasi :*
+${latest.tempat}
 
 Semoga rohnya dicucuri rahmat, diampunkan segala dosanya, dan ditempatkan bersama-sama orang yang beriman, Amin.
-
 Al-Fatihah... 🤲🤲
 
 Daripada :
 AJK Tabung Khairat Kematian
-Masjid Al - Idrisi Mukim Banggol Setol,
-Pasir Mas, Kelantan`;
+Masjid Al - Idrisi Mukim Banggol Setol, Pasir Mas, Kelantan`;
 
   const encoded = encodeURIComponent(text);
   window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
 }
-
 function triggerEditByBil() {
   const inputEl = document.getElementById('input-edit-bil');
   const bilInput = inputEl.value.trim();
@@ -1050,7 +990,6 @@ function triggerEditByBil() {
     showToast('Rekod dengan No Bil tersebut tidak ditemui.');
   }
 }
-
 function triggerDeleteByBil() {
   const inputEl = document.getElementById('input-delete-bil');
   const bilInput = inputEl.value.trim();
@@ -1066,12 +1005,10 @@ function triggerDeleteByBil() {
     showToast('Rekod dengan No Bil tersebut tidak ditemui.');
   }
 }
-
 function closeConfirmModal() {
   recordToDeleteId = null;
   document.getElementById('confirm-modal').classList.add('hidden');
 }
-
 document.getElementById('confirm-delete-btn').onclick = function() {
   if(recordToDeleteId) {
     records = records.filter(r => r.id !== recordToDeleteId);
@@ -1082,7 +1019,6 @@ document.getElementById('confirm-delete-btn').onclick = function() {
   }
   closeConfirmModal();
 };
-
 function saveSettingInfo() {
   settings.namaTabung = document.getElementById('setting-nama-tabung').value;
   settings.subTabung = document.getElementById('setting-sub-tabung').value;
@@ -1090,14 +1026,12 @@ function saveSettingInfo() {
   applySettingsDisplay();
   showToast('Maklumat Tabung Khairat berjaya disimpan!');
 }
-
 function saveWhatsAppNumbers() {
   settings.waPengerusi = document.getElementById('setting-wa-pengerusi').value;
   settings.waSU = document.getElementById('setting-wa-su').value;
   localStorage.setItem('khairat_settings', JSON.stringify(settings));
   showToast('Nombor WhatsApp berjaya dikemaskini!');
 }
-
 function loadLocalSettings() {
   const saved = localStorage.getItem('khairat_settings');
   if(saved) {
@@ -1105,18 +1039,15 @@ function loadLocalSettings() {
   }
   applySettingsDisplay();
 }
-
 function applySettingsDisplay() {
   document.getElementById('setting-nama-tabung').value = settings.namaTabung;
   document.getElementById('setting-sub-tabung').value = settings.subTabung;
   document.getElementById('setting-wa-pengerusi').value = settings.waPengerusi || '';
   document.getElementById('setting-wa-su').value = settings.waSU || '';
 }
-
 function saveRecordsToStorage() {
   localStorage.setItem('khairat_records', JSON.stringify(records));
 }
-
 function loadLocalRecords() {
   const saved = localStorage.getItem('khairat_records');
   if(saved) {
@@ -1138,7 +1069,6 @@ function loadLocalRecords() {
       timestamp: Date.now()}];
   }
 }
-
 function exportJSON() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
   const downloadAnchor = document.createElement('a');
@@ -1149,7 +1079,6 @@ function exportJSON() {
   downloadAnchor.remove();
   showToast('Eksport JSON berjaya.');
 }
-
 function importJSON(event) {
   const fileReader = new FileReader();
   fileReader.onload = function(e) {
@@ -1178,14 +1107,12 @@ function importJSON(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
-
 function formatDateMY(dateStr) {
   if(!dateStr) return '-';
   const parts = dateStr.split('-');
   if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
   return dateStr;
 }
-
 function showToast(msg) {
   const toast = document.getElementById('toast');
   document.getElementById('toast-message').innerText = msg;
