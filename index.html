@@ -10,9 +10,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- Chart.js for Analytics -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Firebase SDK & Initialization -->
+<!-- Firebase SDK & Initialization (Firestore) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBONw03TtyThH75xEPgRUZu7qS-XC07kiQ",
   authDomain: "sistem-tabung-khairat.firebaseapp.com",
@@ -21,8 +23,14 @@ const firebaseConfig = {
   messagingSenderId: "293269812469",
   appId: "1:293269812469:web:a2783cdc3d33ebf5cac1bc"
 };
+
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 window.firebaseApp = app;
+window.db = db;
+window.FirestoreAPI = { collection, getDocs, setDoc, doc, deleteDoc, onSnapshot, addDoc };
+window.dispatchEvent(new Event('firebase-loaded'));
 </script>
 <!-- Tailwind Custom Configuration -->
 <script>
@@ -159,9 +167,9 @@ body {
 </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
-<!-- Header Desktop/Mobile -->
-<header class="p-3 md:p-6 pb-0 md:pb-0 no-print">
-  <div class="max-w-7xl mx-auto">
+<!-- Header Skrin Penuh -->
+<header class="p-3 md:p-6 pb-0 md:pb-0 no-print w-full">
+  <div class="w-full">
     <div class="bg-brand text-white rounded-3xl p-5 md:p-8 shadow-xl relative overflow-hidden">
       <h1 id="header-nama-tabung" class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-snug uppercase space-y-1">
         <span class="block text-2xl sm:text-3xl md:text-4xl">MASJID AL - IDRISI</span>
@@ -184,10 +192,10 @@ body {
     <button onclick="switchTab('tetapan')" id="mob-nav-tetapan" class="mob-nav-btn py-2 px-1 rounded-xl flex flex-col items-center text-xs font-semibold text-gray-600"><i class="fa-solid fa-gear text-base mb-1"></i> Tetapan</button>
   </div>
 </nav>
-<!-- Main Content Layout -->
-<div class="max-w-7xl w-full mx-auto flex-1 flex flex-col md:flex-row p-3 md:p-6 gap-6">
+<!-- Main Content Layout Skrin Penuh (Full Width Desktop) -->
+<div class="w-full flex-1 flex flex-col md:flex-row p-3 md:p-6 gap-6">
   <!-- Sidebar Navigation for Desktop -->
-  <aside class="hidden md:block w-64 bg-white rounded-2xl p-4 shadow-sm border border-gray-200 h-fit no-print">
+  <aside class="hidden md:block w-72 bg-white rounded-2xl p-4 shadow-sm border border-gray-200 h-fit no-print shrink-0">
     <div class="bg-brand text-white p-4 rounded-xl mb-6 shadow-sm">
       <h2 id="sidebar-nama-tabung" class="font-bold text-xs uppercase leading-snug">MASJID AL - IDRISI<br>MUKIM BANGGOL SETOL</h2>
       <p class="text-xs text-blue-200 mt-1">Tabung Khairat Kematian</p>
@@ -200,7 +208,7 @@ body {
     </nav>
   </aside>
   <!-- Dynamic Main Views -->
-  <main class="flex-1 space-y-6">
+  <main class="flex-1 space-y-6 w-full overflow-hidden">
     <!-- ================= UTAMA : ANALISIS KEMATIAN ================= -->
     <section id="page-utama" class="page-content space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -223,7 +231,7 @@ body {
       </div>
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
         <h4 class="font-semibold text-gray-700 mb-4 text-sm"><i class="fa-solid fa-chart-bar mr-2 text-brand"></i>Taburan Kematian Mengikut Kampung</h4>
-        <div class="h-80 relative overflow-x-auto"><canvas id="chartKampung"></canvas></div>
+        <div class="h-96 relative overflow-x-auto"><canvas id="chartKampung"></canvas></div>
       </div>
     </section>
     <!-- ================= SENARAI KEMATIAN ================= -->
@@ -278,15 +286,15 @@ body {
           <table class="w-full text-left border-collapse table-umum">
             <thead>
               <tr class="bg-brand text-white border-b border-blue-900 font-bold whitespace-nowrap">
-                <th class="p-2 sm:p-2.5">Bil</th>
-                <th class="p-2 sm:p-2.5">Nama Arwah</th>
-                <th class="p-2 sm:p-2.5">Bil Kematian</th>
-                <th class="p-2 sm:p-2.5">Kampung</th>
-                <th class="p-2 sm:p-2.5">Tarikh Kematian</th>
-                <th class="p-2 sm:p-2.5">Hari</th>
-                <th class="p-2 sm:p-2.5">Masa Kematian</th>
-                <th class="p-2 sm:p-2.5">Masa Solat Jenazah</th>
-                <th class="p-2 sm:p-2.5">Tempat Perkuburan</th>
+                <th class="p-2.5">Bil</th>
+                <th class="p-2.5">Nama Arwah</th>
+                <th class="p-2.5">Bil Kematian</th>
+                <th class="p-2.5">Kampung</th>
+                <th class="p-2.5">Tarikh Kematian</th>
+                <th class="p-2.5">Hari</th>
+                <th class="p-2.5">Masa Kematian</th>
+                <th class="p-2.5">Masa Solat Jenazah</th>
+                <th class="p-2.5">Tempat Perkuburan</th>
               </tr>
             </thead>
             <tbody id="general-table-body" class="divide-y divide-gray-200">
@@ -416,7 +424,7 @@ body {
       <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex justify-between items-center">
         <div>
           <span class="text-gray-500 font-medium block">Bil Kematian Auto:</span>
-          <span id="form-bil-display" class="text-brand font-bold text-sm">644 (31/2026)</span>
+          <span id="form-bil-display" class="text-brand font-bold text-sm">-</span>
         </div>
         <span class="text-[10px] text-gray-400">Dijana Secara Automatik</span>
       </div>
@@ -520,7 +528,8 @@ body {
   <i class="fa-solid fa-circle-info text-green-400"></i>
   <span id="toast-message">Mesej Notifikasi</span>
 </div>
-<!-- Main Logic Script -->
+
+<!-- Main Logic Script (Firebase Firestore Realtime Sync) -->
 <script>
 let records = [];
 let chartInstance = null;
@@ -554,22 +563,20 @@ function formatTime12H(time24) {
   return `${formattedHours}:${minutes} ${suffix}`;
 }
 
-window.onload = function() {
-  loadLocalSettings();
-  updateCurrentDate();
-  loadLocalRecords();
-  initChart();
-  renderAllViews();
+window.addEventListener('firebase-loaded', function() {
+  initFirestoreListeners();
+  loadFirebaseSettings();
+});
 
-  // Menyediakan titik rujukan sejarah aplikasi
+window.onload = function() {
+  updateCurrentDate();
+  initChart();
+  
   history.replaceState({ page: 'exit' }, "", "");
   history.pushState({ page: 'utama' }, "", "");
-
   window.addEventListener('popstate', function(event) {
     const formModal = document.getElementById('form-modal');
     const confirmModal = document.getElementById('confirm-modal');
-
-    // 1. Jika ada modal yang terbuka, tutup modal sahaja
     if (!formModal.classList.contains('hidden')) {
       closeFormModal();
       history.pushState({ page: currentActiveTab }, "", "");
@@ -580,18 +587,68 @@ window.onload = function() {
       history.pushState({ page: currentActiveTab }, "", "");
       return;
     }
-
-    // 2. Jika berada di tab lain, kembali ke tab 'utama' (Tekanan pertama dari tab lain)
     if (currentActiveTab !== 'utama') {
       switchTab('utama', false);
       history.pushState({ page: 'utama' }, "", "");
       return;
     }
-
-    // 3. Jika sudah berada di tab 'utama', apabila butang back ditekan sekali lagi, ia akan keluar sistem
     history.back();
   });
 };
+
+function initFirestoreListeners() {
+  const { collection, onSnapshot } = window.FirestoreAPI;
+  const db = window.db;
+
+  // Realtime Listener untuk Rekod Kematian
+  onSnapshot(collection(db, "kematian"), (snapshot) => {
+    records = [];
+    snapshot.forEach((docSnap) => {
+      records.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    
+    // Susun mengikut nombor bil kematian / timestamp
+    records.sort((a, b) => {
+      const matchA = (a.bilKematian || '').match(/^(\d+)/);
+      const matchB = (b.bilKematian || '').match(/^(\d+)/);
+      const numA = matchA ? parseInt(matchA[1], 10) : 0;
+      const numB = matchB ? parseInt(matchB[1], 10) : 0;
+      if (numA !== numB) return numA - numB;
+      return new Date(a.tarikh || 0) - new Date(b.tarikh || 0);
+    });
+
+    renderAllViews();
+  }, (error) => {
+    console.error("Ralat Firestore:", error);
+    showToast("Ralat menyambung ke pangkalan data.");
+  });
+}
+
+async function loadFirebaseSettings() {
+  try {
+    const { doc, getDocs, collection } = window.FirestoreAPI;
+    const db = window.db;
+    const querySnapshot = await getDocs(collection(db, "tetapan"));
+    querySnapshot.forEach((docSnap) => {
+      if(docSnap.id === 'info') {
+        settings = docSnap.data();
+      }
+    });
+    applySettingsDisplay();
+  } catch(e) {
+    console.log("Guna tetapan lalai");
+  }
+}
+
+async function saveSettingsToFirebase() {
+  try {
+    const { doc, setDoc } = window.FirestoreAPI;
+    const db = window.db;
+    await setDoc(doc(db, "tetapan", "info"), settings);
+  } catch(e) {
+    console.error("Gagal simpan tetapan:", e);
+  }
+}
 
 function updateCurrentDate() {
   const today = new Date();
@@ -636,7 +693,7 @@ function getLatestRecord() {
     const numA = matchA ? parseInt(matchA[1], 10) : 0;
     const numB = matchB ? parseInt(matchB[1], 10) : 0;
     if (numA !== numB) return numB - numA;
-    return new Date(b.tarikh) - new Date(a.tarikh);
+    return new Date(b.tarikh || 0) - new Date(a.tarikh || 0);
   })[0];
 }
 
@@ -669,6 +726,7 @@ function openFormModal(editRecord = null) {
   document.getElementById('form-kampung-manual').classList.add('hidden');
   document.getElementById('form-lokasi-solat-manual').classList.add('hidden');
   document.getElementById('form-tempat-manual').classList.add('hidden');
+  
   if(editRecord) {
     document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square mr-2"></i>Kemaskini Rekod Kematian`;
     document.getElementById('form-id').value = editRecord.id;
@@ -748,7 +806,7 @@ function toggleManualInput(type) {
   }
 }
 
-function handleFormSubmit(e) {
+async function handleFormSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('form-id').value;
   const nama = document.getElementById('form-nama').value.trim();
@@ -756,66 +814,66 @@ function handleFormSubmit(e) {
   const hari = document.getElementById('form-hari').value;
   const rawMasaKematian = document.getElementById('form-masa-kematian').value;
   const rawMasaSolat = document.getElementById('form-masa-solat').value;
+  
   let lokasiSolat = document.getElementById('form-lokasi-solat-select').value;
   if(lokasiSolat === 'Lain-lain') {
     lokasiSolat = document.getElementById('form-lokasi-solat-manual').value.trim() || 'Lain-lain';
   } else if(!lokasiSolat) {
     lokasiSolat = 'Masjid Al - Idrisi Mukim Bgl Setol';
   }
+  
   const masaKematian = formatTime12H(rawMasaKematian);
   const masaSolat = formatTime12H(rawMasaSolat);
+  
   let kampung = document.getElementById('form-kampung').value;
   if(kampung === 'Lain-lain') {
     kampung = document.getElementById('form-kampung-manual').value.trim() || 'Lain-lain';
   }
+  
   let tempat = document.getElementById('form-tempat').value;
   if(tempat === 'Lain-lain') {
     tempat = document.getElementById('form-tempat-manual').value.trim() || 'Lain-lain';
   }
-  if(id) {
-    const index = records.findIndex(r => r.id === id);
-    if(index !== -1) {
-      records[index] = {
-        ...records[index],
+
+  const { doc, setDoc } = window.FirestoreAPI;
+  const db = window.db;
+
+  try {
+    if(id) {
+      const recordRef = doc(db, "kematian", id);
+      const updatedData = {
         nama, kampung, tarikh, hari,
         rawMasaKematian, rawMasaSolat,
         masaKematian, masaSolat, lokasiSolat, tempat
       };
-      saveRecordsToStorage();
+      await setDoc(recordRef, updatedData, { merge: true });
       showToast('Rekod berjaya dikemaskini!');
+    } else {
+      const bilKematian = generateBilNumber(tarikh);
+      const newId = Date.now().toString();
+      const recordRef = doc(db, "kematian", newId);
+      const newRecord = {
+        nama,
+        bilKematian,
+        kampung,
+        tarikh,
+        hari,
+        rawMasaKematian,
+        rawMasaSolat,
+        masaKematian,
+        masaSolat,
+        lokasiSolat,
+        tempat,
+        timestamp: new Date().getTime()
+      };
+      await setDoc(recordRef, newRecord);
+      showToast('Rekod kematian baharu berjaya disimpan!');
     }
-  } else {
-    const bilKematian = generateBilNumber(tarikh);
-    const newRecord = {
-      id: Date.now().toString(),
-      nama,
-      bilKematian,
-      kampung,
-      tarikh,
-      hari,
-      rawMasaKematian,
-      rawMasaSolat,
-      masaKematian,
-      masaSolat,
-      lokasiSolat,
-      tempat,
-      timestamp: new Date().getTime()
-    };
-    
-    records.push(newRecord);
-    records.sort((a, b) => {
-      const matchA = (a.bilKematian || '').match(/^(\d+)/);
-      const matchB = (b.bilKematian || '').match(/^(\d+)/);
-      const numA = matchA ? parseInt(matchA[1], 10) : 0;
-      const numB = matchB ? parseInt(matchB[1], 10) : 0;
-      if (numA !== numB) return numA - numB;
-      return new Date(a.tarikh) - new Date(b.tarikh);
-    });
-    saveRecordsToStorage();
-    showToast('Rekod kematian baharu berjaya disimpan!');
+    closeFormModal();
+  } catch(err) {
+    console.error("Ralat simpan ke Firebase:", err);
+    showToast("Gagal menyimpan ke pangkalan data.");
   }
-  closeFormModal();
-  renderAllViews();
 }
 
 function renderAllViews() {
@@ -840,11 +898,11 @@ function updateStats() {
     }
     return false;
   }).length;
-
+  
   document.getElementById('stat-total').innerText = total;
   document.getElementById('stat-year-label').innerText = currentYear;
   document.getElementById('stat-year').innerText = yearRecords;
-
+  
   const kampungCounts = {};
   records.forEach(r => {
     if(r.kampung && r.kampung.trim() !== '' && r.kampung.trim() !== '-') {
@@ -852,7 +910,7 @@ function updateStats() {
       kampungCounts[kp] = (kampungCounts[kp] || 0) + 1;
     }
   });
-
+  
   let topKampung = '-';
   let maxCount = 0;
   for(const [kp, count] of Object.entries(kampungCounts)) {
@@ -868,10 +926,12 @@ function renderGeneralTable(filteredData = null) {
   const tbody = document.getElementById('general-table-body');
   const dataToRender = filteredData || records;
   document.getElementById('record-count-badge').innerText = `${dataToRender.length} Rekod`;
+  
   if(dataToRender.length === 0) {
     tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">Tiada rekod kematian ditemui.</td></tr>`;
     return;
   }
+  
   tbody.innerHTML = dataToRender.map((r, i) => `
     <tr class="hover:bg-blue-50/50 transition border-b border-gray-100">
       <td class="p-3 font-bold text-gray-800">${i + 1}</td>
@@ -950,7 +1010,7 @@ function initChart() {
         label: 'Jumlah Kematian',
         data: [],
         backgroundColor: '#0b132b',
-        borderRadius: 8
+        borderRadius: 10
       }]
     },
     options: {
@@ -959,18 +1019,19 @@ function initChart() {
       plugins: { legend: { display: false } },
       scales: {
         x: {
+          grid: { display: true, color: '#e5e7eb' },
           ticks: {
             autoSkip: false,
             maxRotation: 45,
             minRotation: 45,
-            font: {
-              size: 10
-            }
+            font: { size: 11, family: 'Segoe UI' },
+            color: '#374151'
           }
         },
         y: { 
           beginAtZero: true, 
-          ticks: { stepSize: 1 } 
+          grid: { display: true, color: '#e5e7eb' },
+          ticks: { stepSize: 1, font: { size: 11, family: 'Segoe UI' }, color: '#374151' } 
         }
       }
     }
@@ -1006,6 +1067,7 @@ function sendWhatsApp(role) {
   const masaSolatFmt = formatTime12H(latest.masaSolat);
   const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
   
+  // Format mesej WhatsApp diselaraskan 100% mengikut jarak baris pada gambar rujukan
   const text = 
 `السلام عليكم ورحمة الله وبركاته
 
@@ -1030,7 +1092,7 @@ ${formatDateMY(latest.tarikh)} (${latest.hari})
 *Masa :*
 ${masaKematianFmt}
 
-*MAKLUMAT PENGURUSAN JENAZAH :*
+*MAKLUMAT PENGURUSان JENAZAH :*
 *Solat Jenazah :*
 ${masaSolatFmt}
 
@@ -1089,13 +1151,18 @@ function closeConfirmModal() {
   document.getElementById('confirm-modal').classList.add('hidden');
 }
 
-document.getElementById('confirm-delete-btn').onclick = function() {
+document.getElementById('confirm-delete-btn').onclick = async function() {
   if(recordToDeleteId) {
-    records = records.filter(r => r.id !== recordToDeleteId);
-    saveRecordsToStorage();
-    renderAllViews();
-    document.getElementById('input-delete-bil').value = '';
-    showToast('Rekod berjaya dihapuskan.');
+    const { doc, deleteDoc } = window.FirestoreAPI;
+    const db = window.db;
+    try {
+      await deleteDoc(doc(db, "kematian", recordToDeleteId));
+      document.getElementById('input-delete-bil').value = '';
+      showToast('Rekod berjaya dihapuskan.');
+    } catch(err) {
+      console.error("Gagal padam:", err);
+      showToast('Gagal menghapuskan rekod.');
+    }
   }
   closeConfirmModal();
 };
@@ -1103,7 +1170,7 @@ document.getElementById('confirm-delete-btn').onclick = function() {
 function saveSettingInfo() {
   settings.namaTabung = document.getElementById('setting-nama-tabung').value;
   settings.subTabung = document.getElementById('setting-sub-tabung').value;
-  localStorage.setItem('khairat_settings', JSON.stringify(settings));
+  saveSettingsToFirebase();
   applySettingsDisplay();
   showToast('Maklumat Tabung Khairat berjaya disimpan!');
 }
@@ -1111,49 +1178,15 @@ function saveSettingInfo() {
 function saveWhatsAppNumbers() {
   settings.waPengerusi = document.getElementById('setting-wa-pengerusi').value;
   settings.waSU = document.getElementById('setting-wa-su').value;
-  localStorage.setItem('khairat_settings', JSON.stringify(settings));
+  saveSettingsToFirebase();
   showToast('Nombor WhatsApp berjaya dikemaskini!');
 }
 
-function loadLocalSettings() {
-  const saved = localStorage.getItem('khairat_settings');
-  if(saved) {
-    settings = JSON.parse(saved);
-  }
-  applySettingsDisplay();
-}
-
 function applySettingsDisplay() {
-  document.getElementById('setting-nama-tabung').value = settings.namaTabung;
-  document.getElementById('setting-sub-tabung').value = settings.subTabung;
+  document.getElementById('setting-nama-tabung').value = settings.namaTabung || "Masjid Al - Idrisi Mukim Banggol Setol";
+  document.getElementById('setting-sub-tabung').value = settings.subTabung || "Tabung Khairat Kematian";
   document.getElementById('setting-wa-pengerusi').value = settings.waPengerusi || '';
   document.getElementById('setting-wa-su').value = settings.waSU || '';
-}
-
-function saveRecordsToStorage() {
-  localStorage.setItem('khairat_records', JSON.stringify(records));
-}
-
-function loadLocalRecords() {
-  const saved = localStorage.getItem('khairat_records');
-  if(saved) {
-    records = JSON.parse(saved);
-  } else {
-    records = [{
-      id: "1001",
-      nama: "Zubaidah bt Daud",
-      bilKematian: "643 (30/2026)",
-      kampung: "Lubok Kawah Dalam",
-      tarikh: "2026-10-22",
-      hari: "Khamis",
-      rawMasaKematian: "05:00",
-      rawMasaSolat: "17:00",
-      masaKematian: "05:00 pg",
-      masaSolat: "05:00 ptg",
-      lokasiSolat: "Masjid Al - Idrisi Mukim Bgl Setol",
-      tempat: "Tanah Perkuburan Islam Pondok",
-      timestamp: Date.now()}];
-  }
 }
 
 function exportJSON() {
@@ -1167,24 +1200,19 @@ function exportJSON() {
   showToast('Eksport JSON berjaya.');
 }
 
-function importJSON(event) {
+async function importJSON(event) {
   const fileReader = new FileReader();
-  fileReader.onload = function(e) {
+  fileReader.onload = async function(e) {
     try {
       const imported = JSON.parse(e.target.result);
       if(Array.isArray(imported)) {
-        imported.sort((a, b) => {
-          const matchA = (a.bilKematian || '').match(/^(\d+)/);
-          const matchB = (b.bilKematian || '').match(/^(\d+)/);
-          const numA = matchA ? parseInt(matchA[1], 10) : 0;
-          const numB = matchB ? parseInt(matchB[1], 10) : 0;
-          if (numA !== numB) return numA - numB;
-          return new Date(a.tarikh) - new Date(b.tarikh);
-        });
-        records = imported;
-        saveRecordsToStorage();
-        renderAllViews();
-        showToast('Import data JSON berjaya!');
+        const { doc, setDoc } = window.FirestoreAPI;
+        const db = window.db;
+        for(const item of imported) {
+          const docId = item.id ? item.id.toString() : Date.now().toString();
+          await setDoc(doc(db, "kematian", docId), item);
+        }
+        showToast('Import data ke Firebase berjaya!');
       } else {
         showToast('Format fail JSON tidak sah.');
       }
