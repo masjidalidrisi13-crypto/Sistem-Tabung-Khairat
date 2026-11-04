@@ -14,7 +14,6 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyBONw03TtyThH75xEPgRUZu7qS-XC07kiQ",
   authDomain: "sistem-tabung-khairat.firebaseapp.com",
@@ -23,10 +22,8 @@ const firebaseConfig = {
   messagingSenderId: "293269812469",
   appId: "1:293269812469:web:a2783cdc3d33ebf5cac1bc"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 window.firebaseApp = app;
 window.db = db;
 window.FirestoreAPI = { collection, getDocs, setDoc, doc, deleteDoc, onSnapshot, addDoc };
@@ -528,7 +525,6 @@ body {
   <i class="fa-solid fa-circle-info text-green-400"></i>
   <span id="toast-message">Mesej Notifikasi</span>
 </div>
-
 <!-- Main Logic Script (Firebase Firestore Realtime Sync) -->
 <script>
 let records = [];
@@ -541,7 +537,6 @@ let settings = {
   waPengerusi: "60123456789",
   waSU: "60198765432"
 };
-
 function formatTime12H(time24) {
   if (!time24) return '-';
   if (/[a-zA-Z]/.test(time24)) return time24;
@@ -562,12 +557,10 @@ function formatTime12H(time24) {
   const formattedHours = hours12 < 10 ? '0' + hours12 : hours12;
   return `${formattedHours}:${minutes} ${suffix}`;
 }
-
 window.addEventListener('firebase-loaded', function() {
   initFirestoreListeners();
   loadFirebaseSettings();
 });
-
 window.onload = function() {
   updateCurrentDate();
   initChart();
@@ -595,11 +588,9 @@ window.onload = function() {
     history.back();
   });
 };
-
 function initFirestoreListeners() {
   const { collection, onSnapshot } = window.FirestoreAPI;
   const db = window.db;
-
   // Realtime Listener untuk Rekod Kematian
   onSnapshot(collection(db, "kematian"), (snapshot) => {
     records = [];
@@ -616,14 +607,12 @@ function initFirestoreListeners() {
       if (numA !== numB) return numA - numB;
       return new Date(a.tarikh || 0) - new Date(b.tarikh || 0);
     });
-
     renderAllViews();
   }, (error) => {
     console.error("Ralat Firestore:", error);
     showToast("Ralat menyambung ke pangkalan data.");
   });
 }
-
 async function loadFirebaseSettings() {
   try {
     const { doc, getDocs, collection } = window.FirestoreAPI;
@@ -639,7 +628,6 @@ async function loadFirebaseSettings() {
     console.log("Guna tetapan lalai");
   }
 }
-
 async function saveSettingsToFirebase() {
   try {
     const { doc, setDoc } = window.FirestoreAPI;
@@ -649,7 +637,6 @@ async function saveSettingsToFirebase() {
     console.error("Gagal simpan tetapan:", e);
   }
 }
-
 function updateCurrentDate() {
   const today = new Date();
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -657,7 +644,6 @@ function updateCurrentDate() {
   document.getElementById('current-date-display').innerText = formatted;
   document.getElementById('print-timestamp').innerText = formatted;
 }
-
 function switchTab(tabId, updateHistory = true) {
   currentActiveTab = tabId;
   document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
@@ -681,7 +667,6 @@ function switchTab(tabId, updateHistory = true) {
     history.pushState({ page: tabId }, "", "");
   }
 }
-
 function getLatestRecord() {
   if (records.length === 0) return null;
   return [...records].sort((a, b) => {
@@ -696,7 +681,6 @@ function getLatestRecord() {
     return new Date(b.tarikh || 0) - new Date(a.tarikh || 0);
   })[0];
 }
-
 function generateBilNumber(dateString) {
   if (records.length === 0) return `614 (1/${new Date(dateString).getFullYear()})`;
   
@@ -718,7 +702,6 @@ function generateBilNumber(dateString) {
   
   return `${nextGenNo} (${nextYearNo}/${currentYear})`;
 }
-
 function openFormModal(editRecord = null) {
   const modal = document.getElementById('form-modal');
   const form = document.getElementById('death-form');
@@ -770,11 +753,9 @@ function openFormModal(editRecord = null) {
   modal.classList.remove('hidden');
   history.pushState({ modal: 'open' }, "", "");
 }
-
 function closeFormModal() {
   document.getElementById('form-modal').classList.add('hidden');
 }
-
 function calculateDayFromDate() {
   const dateVal = document.getElementById('form-tarikh').value;
   if(!dateVal) return;
@@ -786,7 +767,6 @@ function calculateDayFromDate() {
     document.getElementById('form-bil-display').innerText = generateBilNumber(dateVal);
   }
 }
-
 function toggleManualInput(type) {
   if(type === 'kampung') {
     const sel = document.getElementById('form-kampung').value;
@@ -805,7 +785,6 @@ function toggleManualInput(type) {
     else input.classList.add('hidden');
   }
 }
-
 async function handleFormSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('form-id').value;
@@ -834,10 +813,8 @@ async function handleFormSubmit(e) {
   if(tempat === 'Lain-lain') {
     tempat = document.getElementById('form-tempat-manual').value.trim() || 'Lain-lain';
   }
-
   const { doc, setDoc } = window.FirestoreAPI;
   const db = window.db;
-
   try {
     if(id) {
       const recordRef = doc(db, "kematian", id);
@@ -875,7 +852,6 @@ async function handleFormSubmit(e) {
     showToast("Gagal menyimpan ke pangkalan data.");
   }
 }
-
 function renderAllViews() {
   renderGeneralTable();
   renderLatestTable();
@@ -883,10 +859,19 @@ function renderAllViews() {
   updateStats();
   updateChart();
 }
-
 function updateStats() {
-  const total = records.length;
   const currentYear = new Date().getFullYear();
+  const latest = getLatestRecord();
+  
+  let totalOverall = 0;
+  if (latest && latest.bilKematian) {
+    const match = latest.bilKematian.match(/^(\d+)/);
+    if (match) {
+      totalOverall = parseInt(match[1], 10);
+    }
+  } else {
+    totalOverall = records.length;
+  }
   
   const yearRecords = records.filter(r => {
     if (r.tarikh) {
@@ -899,7 +884,7 @@ function updateStats() {
     return false;
   }).length;
   
-  document.getElementById('stat-total').innerText = total;
+  document.getElementById('stat-total').innerText = totalOverall;
   document.getElementById('stat-year-label').innerText = currentYear;
   document.getElementById('stat-year').innerText = yearRecords;
   
@@ -921,7 +906,6 @@ function updateStats() {
   }
   document.getElementById('stat-top-kampung').innerText = topKampung !== '-' ? `${topKampung} (${maxCount})` : '-';
 }
-
 function renderGeneralTable(filteredData = null) {
   const tbody = document.getElementById('general-table-body');
   const dataToRender = filteredData || records;
@@ -946,7 +930,6 @@ function renderGeneralTable(filteredData = null) {
     </tr>
   `).join('');
 }
-
 function renderLatestTable() {
   const tbody = document.getElementById('latest-record-body');
   const latest = getLatestRecord();
@@ -966,7 +949,6 @@ function renderLatestTable() {
     </tr>
   `;
 }
-
 function renderPrintTable() {
   const tbody = document.getElementById('print-table-body');
   if(records.length === 0) {
@@ -987,7 +969,6 @@ function renderPrintTable() {
     </tr>
   `).join('');
 }
-
 function filterRecords() {
   const q = document.getElementById('smart-search-input').value.toLowerCase();
   const filtered = records.filter(r => 
@@ -999,7 +980,6 @@ function filterRecords() {
   );
   renderGeneralTable(filtered);
 }
-
 function initChart() {
   const ctx = document.getElementById('chartKampung').getContext('2d');
   chartInstance = new Chart(ctx, {
@@ -1037,7 +1017,6 @@ function initChart() {
     }
   });
 }
-
 function updateChart() {
   if(!chartInstance) return;
   const counts = {};
@@ -1051,7 +1030,6 @@ function updateChart() {
   chartInstance.data.datasets[0].data = Object.values(counts);
   chartInstance.update();
 }
-
 function sendWhatsApp(role) {
   const latest = getLatestRecord();
   if(!latest) {
@@ -1067,53 +1045,38 @@ function sendWhatsApp(role) {
   const masaSolatFmt = formatTime12H(latest.masaSolat);
   const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
   
-  // Format mesej WhatsApp diselaraskan 100% mengikut jarak baris pada gambar rujukan
   const text = 
 `السلام عليكم ورحمة الله وبركاته
-
 *MAKLUMAN KEMATIAN*
-
 إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
-
 Dengan penuh rasa dukacita dimaklumkan bahawa :
-
 👤 *Nama :*
 ${latest.nama}
-
 📌 *No. Bil Kematian :*
 ${latest.bilKematian}
-
 🏠 *Alamat :*
 ${latest.kampung}
-
 *Telah kembali ke Rahmatullah iaitu :*
 *Tarikh :*
 ${formatDateMY(latest.tarikh)} (${latest.hari})
 *Masa :*
 ${masaKematianFmt}
-
 *MAKLUMAT PENGURUSAN JENAZAH :*
 *Solat Jenazah :*
 ${masaSolatFmt}
-
 *Lokasi :*
 ${lokasiSolat}
-
 *Pengebumian :*
 *Lokasi :*
 ${latest.tempat}
-
 Semoga rohnya dicucuri rahmat, diampunkan segala dosanya, dan ditempatkan bersama-sama orang yang beriman, Amin.
 Al-Fatihah... 🤲🤲
-
 Daripada :
 AJK Tabung Khairat Kematian
 Masjid Al - Idrisi Mukim Banggol Setol, Pasir Mas, Kelantan`;
-
   const encoded = encodeURIComponent(text);
   window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
 }
-
 function triggerEditByBil() {
   const inputEl = document.getElementById('input-edit-bil');
   const bilInput = inputEl.value.trim();
@@ -1128,7 +1091,6 @@ function triggerEditByBil() {
     showToast('Rekod dengan No Bil tersebut tidak ditemui.');
   }
 }
-
 function triggerDeleteByBil() {
   const inputEl = document.getElementById('input-delete-bil');
   const bilInput = inputEl.value.trim();
@@ -1145,12 +1107,10 @@ function triggerDeleteByBil() {
     showToast('Rekod dengan No Bil tersebut tidak ditemui.');
   }
 }
-
 function closeConfirmModal() {
   recordToDeleteId = null;
   document.getElementById('confirm-modal').classList.add('hidden');
 }
-
 document.getElementById('confirm-delete-btn').onclick = async function() {
   if(recordToDeleteId) {
     const { doc, deleteDoc } = window.FirestoreAPI;
@@ -1166,7 +1126,6 @@ document.getElementById('confirm-delete-btn').onclick = async function() {
   }
   closeConfirmModal();
 };
-
 function saveSettingInfo() {
   settings.namaTabung = document.getElementById('setting-nama-tabung').value;
   settings.subTabung = document.getElementById('setting-sub-tabung').value;
@@ -1174,21 +1133,18 @@ function saveSettingInfo() {
   applySettingsDisplay();
   showToast('Maklumat Tabung Khairat berjaya disimpan!');
 }
-
 function saveWhatsAppNumbers() {
   settings.waPengerusi = document.getElementById('setting-wa-pengerusi').value;
   settings.waSU = document.getElementById('setting-wa-su').value;
   saveSettingsToFirebase();
   showToast('Nombor WhatsApp berjaya dikemaskini!');
 }
-
 function applySettingsDisplay() {
   document.getElementById('setting-nama-tabung').value = settings.namaTabung || "Masjid Al - Idrisi Mukim Banggol Setol";
   document.getElementById('setting-sub-tabung').value = settings.subTabung || "Tabung Khairat Kematian";
   document.getElementById('setting-wa-pengerusi').value = settings.waPengerusi || '';
   document.getElementById('setting-wa-su').value = settings.waSU || '';
 }
-
 function exportJSON() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
   const downloadAnchor = document.createElement('a');
@@ -1199,7 +1155,6 @@ function exportJSON() {
   downloadAnchor.remove();
   showToast('Eksport JSON berjaya.');
 }
-
 async function importJSON(event) {
   const fileReader = new FileReader();
   fileReader.onload = async function(e) {
@@ -1222,14 +1177,12 @@ async function importJSON(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
-
 function formatDateMY(dateStr) {
   if(!dateStr) return '-';
   const parts = dateStr.split('-');
   if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
   return dateStr;
 }
-
 function showToast(msg) {
   const toast = document.getElementById('toast');
   document.getElementById('toast-message').innerText = msg;
