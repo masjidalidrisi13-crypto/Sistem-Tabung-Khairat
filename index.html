@@ -1045,32 +1045,45 @@ function sendWhatsApp(role) {
   const masaSolatFmt = formatTime12H(latest.masaSolat);
   const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
   
+  // Format asal WhatsApp dikembalikan 100% seperti rujukan imej
   const text = 
 `السلام عليكم ورحمة الله وبركاته
+
 *MAKLUMAN KEMATIAN*
+
 إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
+
 Dengan penuh rasa dukacita dimaklumkan bahawa :
+
 👤 *Nama :*
 ${latest.nama}
+
 📌 *No. Bil Kematian :*
 ${latest.bilKematian}
+
 🏠 *Alamat :*
 ${latest.kampung}
-*Telah kembali ke Rahmatullah iaitu :*
+
+Telah kembali ke Rahmatullah iaitu :
 *Tarikh :*
 ${formatDateMY(latest.tarikh)} (${latest.hari})
 *Masa :*
 ${masaKematianFmt}
+
 *MAKLUMAT PENGURUSAN JENAZAH :*
 *Solat Jenazah :*
 ${masaSolatFmt}
+
 *Lokasi :*
 ${lokasiSolat}
+
 *Pengebumian :*
 *Lokasi :*
 ${latest.tempat}
+
 Semoga rohnya dicucuri rahmat, diampunkan segala dosanya, dan ditempatkan bersama-sama orang yang beriman, Amin.
 Al-Fatihah... 🤲🤲
+
 Daripada :
 AJK Tabung Khairat Kematian
 Masjid Al - Idrisi Mukim Banggol Setol, Pasir Mas, Kelantan`;
