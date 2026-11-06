@@ -168,11 +168,11 @@ body {
 <header class="p-3 md:p-6 pb-0 md:pb-0 no-print w-full">
   <div class="w-full">
     <div class="bg-brand text-white rounded-3xl p-5 md:p-8 shadow-xl relative overflow-hidden">
-      <!-- Ikon Loceng Notifikasi di Penjuru Kanan Header -->
+      <!-- Ikon Loceng Notifikasi di Header -->
       <div class="absolute top-5 right-5 z-10">
-        <button onclick="openNotificationModal()" class="relative bg-white/10 hover:bg-white/20 p-3 rounded-full border border-white/15 backdrop-blur-md transition flex items-center justify-center shadow-lg">
+        <button onclick="openNotifModal()" class="relative bg-white/10 hover:bg-white/20 p-3 rounded-full border border-white/20 backdrop-blur-md transition flex items-center justify-center shadow-lg">
           <i class="fa-solid fa-bell text-amber-400 text-lg"></i>
-          <span id="notif-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full hidden">0</span>
+          <span id="notif-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
         </button>
       </div>
 
@@ -417,23 +417,25 @@ body {
   </main>
 </div>
 <!-- ================= MODAL NOTIFIKASI KEMATIAN ================= -->
-<div id="notification-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+<div id="notif-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
   <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
     <!-- Header Modal Notifikasi -->
-    <div class="bg-brand text-white p-4 flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-bell text-amber-400"></i>
-        <h3 class="font-bold text-sm sm:text-base">Notifikasi Kematian (1 Minggu)</h3>
+    <div class="p-6 text-center border-b border-gray-100 flex flex-col items-center relative">
+      <button onclick="closeNotifModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      <div class="w-14 h-14 bg-blue-50 border-2 border-blue-100 text-brand rounded-full flex items-center justify-center text-xl mb-3 shadow-inner">
+        <i class="fa-solid fa-calendar-days"></i>
       </div>
-      <button onclick="closeNotificationModal()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="font-bold text-gray-800 text-base flex items-center gap-2">
+        <i class="fa-solid fa-bell text-amber-500"></i> Senarai Kematian Terkini
+      </h3>
     </div>
     <!-- Kandungan Senarai Notifikasi -->
-    <div id="notification-modal-body" class="p-5 overflow-y-auto space-y-4 text-xs">
-      <!-- Diisi secara dinamik oleh JavaScript -->
+    <div id="notif-modal-body" class="p-6 overflow-y-auto space-y-4 text-xs">
+      <!-- Diisi secara dinamik -->
     </div>
-    <!-- Footer Modal -->
-    <div class="p-4 bg-gray-50 border-t flex justify-center">
-      <button onclick="closeNotificationModal()" class="bg-brand text-white font-bold py-2.5 px-8 rounded-xl text-xs hover:bg-brand-dark transition shadow">Tutup</button>
+    <!-- Butang Tutup Modal -->
+    <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-center">
+      <button onclick="closeNotifModal()" class="w-full bg-brand text-white py-3 rounded-2xl font-bold text-xs hover:bg-brand-dark transition shadow">Tutup</button>
     </div>
   </div>
 </div>
@@ -599,9 +601,9 @@ window.onload = function() {
   window.addEventListener('popstate', function(event) {
     const formModal = document.getElementById('form-modal');
     const confirmModal = document.getElementById('confirm-modal');
-    const notifModal = document.getElementById('notification-modal');
+    const notifModal = document.getElementById('notif-modal');
     if (!notifModal.classList.contains('hidden')) {
-      closeNotificationModal();
+      closeNotifModal();
       history.pushState({ page: currentActiveTab }, "", "");
       return;
     }
@@ -716,80 +718,6 @@ function getLatestRecord() {
     return new Date(b.tarikh || 0) - new Date(a.tarikh || 0);
   })[0];
 }
-
-// Fungsi Mendapatkan Senarai Kematian Aktif dalam Tempoh 1 Minggu (Jumaat 3:00 ptg hingga Jumaat 3:00 ptg)
-function getActiveNotifications() {
-  const now = new Date();
-  
-  return records.filter(r => {
-    if (!r.tarikh) return false;
-    
-    // Anggap tarikh kematian sebagai asas jam 15:00 (3 ptg) Jumaat atau tarikh tersebut
-    const deathDate = new Date(r.tarikh + 'T15:00:00');
-    if (isNaN(deathDate.getTime())) return false;
-    
-    // Cari hari Jumaat pada minggu kematian tersebut atau laraskan detik mula Jumaat 3:00 ptg
-    const dayOfWeek = deathDate.getDay(); // 0: Ahad, ..., 5: Jumaat, 6: Sab
-    // Hitung jarak hari ke Jumaat terdekat sebelumnya atau semasa
-    let diffToFriday = (5 - dayOfWeek + 7) % 7;
-    // Jika kematian berlaku sebelum pukul 3 petang Jumaat, tempoh bermula Jumaat minggu sebelumnya, atau Jumaat semasa.
-    // Secara tepat: Tempoh 1 minggu bermula Jumaat 3:00 ptg
-    let fridayStart = new Date(deathDate);
-    fridayStart.setDate(deathDate.getDate() - ((dayOfWeek + 2) % 7)); 
-    fridayStart.setHours(15, 0, 0, 0);
-    
-    // Jika deathDate sebelum Jumaat jam 3 ptg minggu itu, anjak ke belakang 1 minggu
-    if (deathDate < fridayStart) {
-      fridayStart.setDate(fridayStart.getDate() - 7);
-    }
-    
-    const fridayEnd = new Date(fridayStart);
-    fridayEnd.setDate(fridayEnd.getDate() + 7); // Jumaat pukul 3 ptg minggu berikutnya (1 minggu)
-    
-    return now >= fridayStart && now < fridayEnd;
-  });
-}
-
-function updateNotificationBadge() {
-  const activeList = getActiveNotifications();
-  const badge = document.getElementById('notif-badge');
-  if (activeList.length > 0) {
-    badge.innerText = activeList.length;
-    badge.classList.remove('hidden');
-  } else {
-    badge.classList.add('hidden');
-  }
-}
-
-function openNotificationModal() {
-  const modal = document.getElementById('notification-modal');
-  const bodyEl = document.getElementById('notification-modal-body');
-  const activeList = getActiveNotifications();
-  
-  if (activeList.length === 0) {
-    bodyEl.innerHTML = `<div class="p-6 text-center text-gray-400">Tiada notifikasi kematian aktif dalam tempoh 1 minggu ini.</div>`;
-  } else {
-    bodyEl.innerHTML = activeList.map((r, index) => `
-      <div class="bg-blue-50/60 p-4 rounded-2xl border border-blue-100 space-y-2">
-        <div class="font-bold text-brand text-sm">Notifikasi #${index + 1}</div>
-        <div class="space-y-1 text-gray-700">
-          <div><strong class="text-gray-900">1. Bil Kematian :</strong> <span class="font-semibold text-brand">${r.bilKematian || '-'}</span></div>
-          <div><strong class="text-gray-900">2. Nama :</strong> <span class="font-bold text-gray-900">${r.nama || '-'}</span></div>
-          <div><strong class="text-gray-900">3. Tarikh :</strong> <span>${formatDateMY(r.tarikh)} (${r.hari || '-'})</span></div>
-          <div><strong class="text-gray-900">4. Kampung :</strong> <span>${r.kampung || '-'}</span></div>
-        </div>
-      </div>
-    `).join('');
-  }
-  
-  modal.classList.remove('hidden');
-  history.pushState({ modal: 'notification' }, "", "");
-}
-
-function closeNotificationModal() {
-  document.getElementById('notification-modal').classList.add('hidden');
-}
-
 function generateBilNumber(dateString) {
   if (records.length === 0) return `614 (1/${new Date(dateString).getFullYear()})`;
   
@@ -864,6 +792,46 @@ function openFormModal(editRecord = null) {
 }
 function closeFormModal() {
   document.getElementById('form-modal').classList.add('hidden');
+}
+function openNotifModal() {
+  renderNotifList();
+  document.getElementById('notif-modal').classList.remove('hidden');
+  history.pushState({ modal: 'notif' }, "", "");
+}
+function closeNotifModal() {
+  document.getElementById('notif-modal').classList.add('hidden');
+}
+function renderNotifList() {
+  const container = document.getElementById('notif-modal-body');
+  // Ambil 5 rekod terkini untuk notifikasi
+  const sortedRecords = [...records].sort((a, b) => {
+    if (a.timestamp && b.timestamp) {
+      return b.timestamp - a.timestamp;
+    }
+    const matchA = (a.bilKematian || '').match(/^(\d+)/);
+    const matchB = (b.bilKematian || '').match(/^(\d+)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    if (numA !== numB) return numB - numA;
+    return new Date(b.tarikh || 0) - new Date(a.tarikh || 0);
+  }).slice(0, 5);
+
+  document.getElementById('notif-badge').innerText = sortedRecords.length;
+
+  if (sortedRecords.length === 0) {
+    container.innerHTML = `<div class="p-6 text-center text-gray-400 font-medium">Tiada maklumat notifikasi rekod kematian.</div>`;
+    return;
+  }
+
+  container.innerHTML = sortedRecords.map((r, index) => `
+    <div class="bg-gray-50/80 p-4 rounded-2xl border border-gray-100 space-y-1.5 shadow-sm">
+      <div class="font-bold text-gray-800 text-sm mb-2 pb-1 border-b border-gray-200">Makluman Kematian : ${index + 1}</div>
+      <div class="text-gray-700"><strong>1. Bil Kematian :</strong> <span class="font-semibold text-brand">${r.bilKematian || '-'}</span></div>
+      <div class="text-gray-700"><strong>2. Nama :</strong> <span class="font-semibold text-gray-900">${r.nama || '-'}</span></div>
+      <div class="text-gray-700"><strong>3. Tarikh :</strong> <span class="font-medium">${formatDateMY(r.tarikh)}${r.hari ? ' (' + r.hari + ')' : ''}</span></div>
+      <div class="text-gray-700"><strong>4. Kampung :</strong> <span class="font-medium">${r.kampung || '-'}</span></div>
+    </div>
+  `).join('');
 }
 function calculateDayFromDate() {
   const dateVal = document.getElementById('form-tarikh').value;
@@ -967,7 +935,7 @@ function renderAllViews() {
   renderPrintTable();
   updateStats();
   updateChart();
-  updateNotificationBadge();
+  document.getElementById('notif-badge').innerText = records.length;
 }
 function updateStats() {
   const currentYear = new Date().getFullYear();
@@ -1155,6 +1123,7 @@ function sendWhatsApp(role) {
   const masaSolatFmt = formatTime12H(latest.masaSolat);
   const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
   
+  // Format asal WhatsApp dikembalikan 100% seperti rujukan imej
   const text = 
 `السلام عليكم ورحمة الله وبركاته
 *MAKLUMAN KEMATIAN*
