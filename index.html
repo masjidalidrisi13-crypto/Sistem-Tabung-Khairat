@@ -426,7 +426,7 @@ body {
         <i class="fa-solid fa-calendar-days"></i>
       </div>
       <h3 class="font-bold text-gray-800 text-base flex items-center gap-2">
-        <i class="fa-solid fa-bell text-amber-500"></i> Senarai Kematian Terkini
+        <i class="fa-solid fa-bell text-amber-500"></i> Senarai Kematian Terkini (1 Minggu)
       </h3>
     </div>
     <!-- Kandungan Senarai Notifikasi -->
@@ -718,6 +718,42 @@ function getLatestRecord() {
     return new Date(b.tarikh || 0) - new Date(a.tarikh || 0);
   })[0];
 }
+
+// Fungsi mendapatkan tanda masa sempadan 1 minggu (Jumaat 3 petang hingga Jumaat berikutnya 3 petang)
+function getOneWeekWindow(referenceDate = new Date()) {
+  const d = new Date(referenceDate);
+  const day = d.getDay(); 
+  const diffToFriday = (day >= 5 ? day - 5 : day + 2);
+  const friday = new Date(d);
+  friday.setDate(d.getDate() - diffToFriday);
+  friday.setHours(15, 0, 0, 0); 
+
+  let startWindow, endWindow;
+  if (d.getTime() >= friday.getTime()) {
+    startWindow = friday;
+    endWindow = new Date(friday);
+    endWindow.setDate(friday.getDate() + 7);
+  } else {
+    endWindow = friday;
+    startWindow = new Date(friday);
+    startWindow.setDate(friday.getDate() - 7);
+  }
+  return { start: startWindow.getTime(), end: endWindow.getTime() };
+}
+
+function getWeeklyFilteredRecords() {
+  const now = new Date();
+  const windowTime = getOneWeekWindow(now);
+  return records.filter(r => {
+    let recTime = r.timestamp;
+    if (!recTime && r.tarikh) {
+      recTime = new Date(r.tarikh).getTime();
+    }
+    if (!recTime) return false;
+    return recTime >= windowTime.start && recTime <= windowTime.end;
+  });
+}
+
 function generateBilNumber(dateString) {
   if (records.length === 0) return `614 (1/${new Date(dateString).getFullYear()})`;
   
@@ -803,27 +839,16 @@ function closeNotifModal() {
 }
 function renderNotifList() {
   const container = document.getElementById('notif-modal-body');
-  // Ambil 5 rekod terkini untuk notifikasi
-  const sortedRecords = [...records].sort((a, b) => {
-    if (a.timestamp && b.timestamp) {
-      return b.timestamp - a.timestamp;
-    }
-    const matchA = (a.bilKematian || '').match(/^(\d+)/);
-    const matchB = (b.bilKematian || '').match(/^(\d+)/);
-    const numA = matchA ? parseInt(matchA[1], 10) : 0;
-    const numB = matchB ? parseInt(matchB[1], 10) : 0;
-    if (numA !== numB) return numB - numA;
-    return new Date(b.tarikh || 0) - new Date(a.tarikh || 0);
-  }).slice(0, 5);
+  const weeklyRecords = getWeeklyFilteredRecords();
 
-  document.getElementById('notif-badge').innerText = sortedRecords.length;
+  document.getElementById('notif-badge').innerText = weeklyRecords.length;
 
-  if (sortedRecords.length === 0) {
-    container.innerHTML = `<div class="p-6 text-center text-gray-400 font-medium">Tiada maklumat notifikasi rekod kematian.</div>`;
+  if (weeklyRecords.length === 0) {
+    container.innerHTML = `<div class="p-6 text-center text-gray-400 font-medium">Tiada maklumat kematian dalam tempoh 1 minggu terkini (Jumaat 3 petang hingga Jumaat berikut).</div>`;
     return;
   }
 
-  container.innerHTML = sortedRecords.map((r, index) => `
+  container.innerHTML = weeklyRecords.map((r, index) => `
     <div class="bg-gray-50/80 p-4 rounded-2xl border border-gray-100 space-y-1.5 shadow-sm">
       <div class="font-bold text-gray-800 text-sm mb-2 pb-1 border-b border-gray-200">Makluman Kematian : ${index + 1}</div>
       <div class="text-gray-700"><strong>1. Bil Kematian :</strong> <span class="font-semibold text-brand">${r.bilKematian || '-'}</span></div>
@@ -935,7 +960,7 @@ function renderAllViews() {
   renderPrintTable();
   updateStats();
   updateChart();
-  document.getElementById('notif-badge').innerText = records.length;
+  document.getElementById('notif-badge').innerText = getWeeklyFilteredRecords().length;
 }
 function updateStats() {
   const currentYear = new Date().getFullYear();
@@ -1123,33 +1148,45 @@ function sendWhatsApp(role) {
   const masaSolatFmt = formatTime12H(latest.masaSolat);
   const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
   
-  // Format asal WhatsApp dikembalikan 100% seperti rujukan imej
+  // Format jarak baris WhatsApp dikembalikan 100% sebijik seperti dalam gambar rujukan
   const text = 
 `السلام عليكم ورحمة الله وبركاته
+
 *MAKLUMAN KEMATIAN*
+
 إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
+
 Dengan penuh rasa dukacita dimaklumkan bahawa :
+
 👤 *Nama :*
 ${latest.nama}
+
 📌 *No. Bil Kematian :*
 ${latest.bilKematian}
+
 🏠 *Alamat :*
 ${latest.kampung}
+
 Telah kembali ke Rahmatullah iaitu :
 *Tarikh :*
 ${formatDateMY(latest.tarikh)} (${latest.hari})
 *Masa :*
 ${masaKematianFmt}
+
 *MAKLUMAT PENGURUSAN JENAZAH :*
 *Solat Jenazah :*
 ${masaSolatFmt}
+
 *Lokasi :*
 ${lokasiSolat}
+
 *Pengebumian :*
 *Lokasi :*
 ${latest.tempat}
+
 Semoga rohnya dicucuri rahmat, diampunkan segala dosanya, dan ditempatkan bersama-sama orang yang beriman, Amin.
 Al-Fatihah... 🤲🤲
+
 Daripada :
 AJK Tabung Khairat Kematian
 Masjid Al - Idrisi Mukim Banggol Setol, Pasir Mas, Kelantan`;
