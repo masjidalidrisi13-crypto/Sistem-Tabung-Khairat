@@ -168,7 +168,15 @@ body {
 <header class="p-3 md:p-6 pb-0 md:pb-0 no-print w-full">
   <div class="w-full">
     <div class="bg-brand text-white rounded-3xl p-5 md:p-8 shadow-xl relative overflow-hidden">
-      <h1 id="header-nama-tabung" class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-snug uppercase space-y-1">
+      <!-- Ikon Loceng Notifikasi di Penjuru Kanan Header -->
+      <div class="absolute top-5 right-5 z-10">
+        <button onclick="openNotificationModal()" class="relative bg-white/10 hover:bg-white/20 p-3 rounded-full border border-white/15 backdrop-blur-md transition flex items-center justify-center shadow-lg">
+          <i class="fa-solid fa-bell text-amber-400 text-lg"></i>
+          <span id="notif-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full hidden">0</span>
+        </button>
+      </div>
+
+      <h1 id="header-nama-tabung" class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-snug uppercase space-y-1 pr-12">
         <span class="block text-2xl sm:text-3xl md:text-4xl">MASJID AL - IDRISI</span>
         <span class="block text-xl sm:text-2xl md:text-3xl">MUKIM BANGGOL SETOL</span>
       </h1>
@@ -408,6 +416,27 @@ body {
     </section>
   </main>
 </div>
+<!-- ================= MODAL NOTIFIKASI KEMATIAN ================= -->
+<div id="notification-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+  <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+    <!-- Header Modal Notifikasi -->
+    <div class="bg-brand text-white p-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-bell text-amber-400"></i>
+        <h3 class="font-bold text-sm sm:text-base">Notifikasi Kematian (1 Minggu)</h3>
+      </div>
+      <button onclick="closeNotificationModal()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+    </div>
+    <!-- Kandungan Senarai Notifikasi -->
+    <div id="notification-modal-body" class="p-5 overflow-y-auto space-y-4 text-xs">
+      <!-- Diisi secara dinamik oleh JavaScript -->
+    </div>
+    <!-- Footer Modal -->
+    <div class="p-4 bg-gray-50 border-t flex justify-center">
+      <button onclick="closeNotificationModal()" class="bg-brand text-white font-bold py-2.5 px-8 rounded-xl text-xs hover:bg-brand-dark transition shadow">Tutup</button>
+    </div>
+  </div>
+</div>
 <!-- ================= MODAL BORANG TAMBAH / EDIT KEMATIAN ================= -->
 <div id="form-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
   <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -570,6 +599,12 @@ window.onload = function() {
   window.addEventListener('popstate', function(event) {
     const formModal = document.getElementById('form-modal');
     const confirmModal = document.getElementById('confirm-modal');
+    const notifModal = document.getElementById('notification-modal');
+    if (!notifModal.classList.contains('hidden')) {
+      closeNotificationModal();
+      history.pushState({ page: currentActiveTab }, "", "");
+      return;
+    }
     if (!formModal.classList.contains('hidden')) {
       closeFormModal();
       history.pushState({ page: currentActiveTab }, "", "");
@@ -681,6 +716,80 @@ function getLatestRecord() {
     return new Date(b.tarikh || 0) - new Date(a.tarikh || 0);
   })[0];
 }
+
+// Fungsi Mendapatkan Senarai Kematian Aktif dalam Tempoh 1 Minggu (Jumaat 3:00 ptg hingga Jumaat 3:00 ptg)
+function getActiveNotifications() {
+  const now = new Date();
+  
+  return records.filter(r => {
+    if (!r.tarikh) return false;
+    
+    // Anggap tarikh kematian sebagai asas jam 15:00 (3 ptg) Jumaat atau tarikh tersebut
+    const deathDate = new Date(r.tarikh + 'T15:00:00');
+    if (isNaN(deathDate.getTime())) return false;
+    
+    // Cari hari Jumaat pada minggu kematian tersebut atau laraskan detik mula Jumaat 3:00 ptg
+    const dayOfWeek = deathDate.getDay(); // 0: Ahad, ..., 5: Jumaat, 6: Sab
+    // Hitung jarak hari ke Jumaat terdekat sebelumnya atau semasa
+    let diffToFriday = (5 - dayOfWeek + 7) % 7;
+    // Jika kematian berlaku sebelum pukul 3 petang Jumaat, tempoh bermula Jumaat minggu sebelumnya, atau Jumaat semasa.
+    // Secara tepat: Tempoh 1 minggu bermula Jumaat 3:00 ptg
+    let fridayStart = new Date(deathDate);
+    fridayStart.setDate(deathDate.getDate() - ((dayOfWeek + 2) % 7)); 
+    fridayStart.setHours(15, 0, 0, 0);
+    
+    // Jika deathDate sebelum Jumaat jam 3 ptg minggu itu, anjak ke belakang 1 minggu
+    if (deathDate < fridayStart) {
+      fridayStart.setDate(fridayStart.getDate() - 7);
+    }
+    
+    const fridayEnd = new Date(fridayStart);
+    fridayEnd.setDate(fridayEnd.getDate() + 7); // Jumaat pukul 3 ptg minggu berikutnya (1 minggu)
+    
+    return now >= fridayStart && now < fridayEnd;
+  });
+}
+
+function updateNotificationBadge() {
+  const activeList = getActiveNotifications();
+  const badge = document.getElementById('notif-badge');
+  if (activeList.length > 0) {
+    badge.innerText = activeList.length;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function openNotificationModal() {
+  const modal = document.getElementById('notification-modal');
+  const bodyEl = document.getElementById('notification-modal-body');
+  const activeList = getActiveNotifications();
+  
+  if (activeList.length === 0) {
+    bodyEl.innerHTML = `<div class="p-6 text-center text-gray-400">Tiada notifikasi kematian aktif dalam tempoh 1 minggu ini.</div>`;
+  } else {
+    bodyEl.innerHTML = activeList.map((r, index) => `
+      <div class="bg-blue-50/60 p-4 rounded-2xl border border-blue-100 space-y-2">
+        <div class="font-bold text-brand text-sm">Notifikasi #${index + 1}</div>
+        <div class="space-y-1 text-gray-700">
+          <div><strong class="text-gray-900">1. Bil Kematian :</strong> <span class="font-semibold text-brand">${r.bilKematian || '-'}</span></div>
+          <div><strong class="text-gray-900">2. Nama :</strong> <span class="font-bold text-gray-900">${r.nama || '-'}</span></div>
+          <div><strong class="text-gray-900">3. Tarikh :</strong> <span>${formatDateMY(r.tarikh)} (${r.hari || '-'})</span></div>
+          <div><strong class="text-gray-900">4. Kampung :</strong> <span>${r.kampung || '-'}</span></div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  modal.classList.remove('hidden');
+  history.pushState({ modal: 'notification' }, "", "");
+}
+
+function closeNotificationModal() {
+  document.getElementById('notification-modal').classList.add('hidden');
+}
+
 function generateBilNumber(dateString) {
   if (records.length === 0) return `614 (1/${new Date(dateString).getFullYear()})`;
   
@@ -858,6 +967,7 @@ function renderAllViews() {
   renderPrintTable();
   updateStats();
   updateChart();
+  updateNotificationBadge();
 }
 function updateStats() {
   const currentYear = new Date().getFullYear();
@@ -1045,45 +1155,32 @@ function sendWhatsApp(role) {
   const masaSolatFmt = formatTime12H(latest.masaSolat);
   const lokasiSolat = latest.lokasiSolat || 'Masjid Al - Idrisi Mukim Bgl Setol';
   
-  // Format asal WhatsApp dikembalikan 100% seperti rujukan imej
   const text = 
 `السلام عليكم ورحمة الله وبركاته
-
 *MAKLUMAN KEMATIAN*
-
 إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
-
 Dengan penuh rasa dukacita dimaklumkan bahawa :
-
 👤 *Nama :*
 ${latest.nama}
-
 📌 *No. Bil Kematian :*
 ${latest.bilKematian}
-
 🏠 *Alamat :*
 ${latest.kampung}
-
 Telah kembali ke Rahmatullah iaitu :
 *Tarikh :*
 ${formatDateMY(latest.tarikh)} (${latest.hari})
 *Masa :*
 ${masaKematianFmt}
-
 *MAKLUMAT PENGURUSAN JENAZAH :*
 *Solat Jenazah :*
 ${masaSolatFmt}
-
 *Lokasi :*
 ${lokasiSolat}
-
 *Pengebumian :*
 *Lokasi :*
 ${latest.tempat}
-
 Semoga rohnya dicucuri rahmat, diampunkan segala dosanya, dan ditempatkan bersama-sama orang yang beriman, Amin.
 Al-Fatihah... 🤲🤲
-
 Daripada :
 AJK Tabung Khairat Kematian
 Masjid Al - Idrisi Mukim Banggol Setol, Pasir Mas, Kelantan`;
@@ -1207,4 +1304,3 @@ function showToast(msg) {
 </script>
 </body>
 </html>
-
